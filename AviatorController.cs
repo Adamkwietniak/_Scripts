@@ -179,12 +179,12 @@ public class AviatorController : MonoBehaviour
 			velocityY = -11.0f;
 			velocityZ = 10.0f;
 		} else if (posController.NewPoseName == "Rotate left") {
-			rotationY = 0.5f;
-			velocityY = -11.0f;
+			rotationY = -1.5f;
+			velocityY = -6.0f;
 			velocityZ = 10.0f;
 		} else if (posController.NewPoseName == "Rotate right") {
-			rotationY = -0.5f;
-			velocityY = -11.0f;
+			rotationY = 1.5f;
+			velocityY = -6.0f;
 			velocityZ = 10.0f;
 		} else if (posController.NewPoseName == "Open parachute") {
 			float horizontal = 0.0f;

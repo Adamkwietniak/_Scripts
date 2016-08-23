@@ -37,9 +37,9 @@ public class AviatorGUI : MonoBehaviour
 			}
 			bool incompatible0 = posControlle.NewPoseName == pose.name;
 			bool incompatible1 = (posControlle.NewPoseName == "Backfly position 1" || posControlle.NewPoseName == "Backfly position 2" || posControlle.NewPoseName == "Backfly position 3") &&
-			                              (pose.name == "Salto" || pose.name == "Rotate left" || pose.name == "Rotate right");
+			                     (pose.name == "Salto" || pose.name == "Rotate left" || pose.name == "Rotate right");
 			bool incompatible2 = posControlle.NewPoseName == "Rotate left" || posControlle.NewPoseName == "Rotate right" || posControlle.NewPoseName == "Salto" ||
-			                              posControlle.NewPoseName == "From Salto" || posControlle.NewPoseName == "From Rotate left" || posControlle.NewPoseName == "From Rotate right";
+			                     posControlle.NewPoseName == "From Salto" || posControlle.NewPoseName == "From Rotate left" || posControlle.NewPoseName == "From Rotate right";
 
 			bool compatible = pose.name != "T_Pose" && !incompatible0 && !incompatible1 && !incompatible2;
 
@@ -112,42 +112,43 @@ public class AviatorGUI : MonoBehaviour
 
 	void OnGUI ()
 	{
-		GUILayout.Label ("\n Email: vagho.srapyan@gmail.com ");
+		//GUILayout.Label ("\n Email: vagho.srapyan@gmail.com ");
 		if (controller) {
-			if (!isMobilePlatform) {
+			/*if (!isMobilePlatform) {
 				GUILayout.Label ("\n  Space Down - stop camera control ,\n  MouseOrbit - run camera control,\n  Mouse ScrollWheel - camera zoom.  ");
-			} 
-			GUILayout.Label ("     Horizontal velocity m/s: " + Vector3.ProjectOnPlane (controller.velocity, Vector3.up).magnitude.ToString ("0") +
-			"\n     Vertical velocity m/s: " + Vector3.Project (controller.velocity, Vector3.up).magnitude.ToString ("0"));
+			} */
+			/*GUILayout.Label ("     Horizontal velocity m/s: " + Vector3.ProjectOnPlane (controller.velocity, Vector3.up).magnitude.ToString ("0") +
+			"\n     Vertical velocity m/s: " + Vector3.Project (controller.velocity, Vector3.up).magnitude.ToString ("0"));*/
 
 			RaycastHit hit;
 			Ray ray = new Ray (controller.transform.position, Vector3.down);
-			if (Physics.Raycast (ray, out hit, 100000.0f, mask)) {
+			/*if (Physics.Raycast (ray, out hit, 100000.0f, mask)) {
 				GUILayout.Label ("     Ground height m: " + Vector3.Distance (controller.transform.position, hit.point).ToString ("0") +
 				"\n     Height m: " + Mathf.Clamp (controller.transform.position.y, 0.0f, 100000.0f).ToString ("0"));
-			}
+			}*/
 		}
 		float height = isMobilePlatform ? 50.0f : 20.0f;
-		if (GUILayout.Button ("Reload", GUILayout.Height (height))) {
+		/*if (GUILayout.Button ("Reload", GUILayout.Height (height))) {
 			Application.LoadLevel (Application.loadedLevel);
-		}
+		}*/
 		if (!controller) {
 			return;
 		}
-		GUILayout.Label ("");
+		//GUILayout.Label ("");
        
 		int nextSuitNumber = suitNumber + 1 < suits.Length ? suitNumber + 1 : 0;
-		if (GUILayout.Button ("Suit: " + suits [nextSuitNumber].name, GUILayout.Height (height))) {
+		/*if (GUILayout.Button ("Suit: " + suits [nextSuitNumber].name, GUILayout.Height (height))) {
 			suitMat.mainTexture = suits [nextSuitNumber];
 			helmetMat.mainTexture = suits [nextSuitNumber];
 			suitNumber = nextSuitNumber;
-		}
+		}*/
        
 		if (controller.parachuteIsOpened) {
 			return;
 		}
             
-		if (GUILayout.Button ("Open parachute", GUILayout.Height (height))) {
+		//if (GUILayout.Button ("Open parachute", GUILayout.Height (height))) {
+		if (Input.GetKeyDown (KeyCode.Space)) {
 			Destroy (poses.gameObject);
 			controller.parachuteIsOpened = true;
 			posControlle.SetPose ("Open parachute", 1.0f);

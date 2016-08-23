@@ -21,6 +21,7 @@ public class HitChecker : MonoBehaviour
 	void Awake ()
 	{
 		ccs = (ChangeCameraScript)FindObjectOfType (typeof(ChangeCameraScript)) as ChangeCameraScript;
+		bloodPart.SetActive (false);
 		body = GetComponent<Rigidbody> ();
 		body.useGravity = false;
 		bodies = GetComponentsInChildren<Rigidbody> ();
@@ -60,6 +61,9 @@ public class HitChecker : MonoBehaviour
 				if (item != body) {
 					item.isKinematic = false;
 					item.GetComponent<Collider> ().enabled = true;
+					if (controller.parachuteIsOpened == false) {
+						bloodPart.SetActive (true);
+					}
 				}
 			}
 			Destroy (controller);
