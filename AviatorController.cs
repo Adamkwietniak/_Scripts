@@ -6,7 +6,7 @@ public class AviatorController : MonoBehaviour
 	[SerializeField]
 	private JointsPoseController posController;
 	[SerializeField]
-	private Transform root;
+	public Transform root;
 
 	[SerializeField]
 	private JointsRandomAnimations[] joints;
@@ -19,11 +19,11 @@ public class AviatorController : MonoBehaviour
 	private Vector3[] hipSuitRotations;
 	private Vector3[] armSuitRotations;
 	[SerializeField]
-	private Transform
+	public Transform
 		aviatorRoot;
 
 	private float rotationY;
-	private float velocityY;
+	[HideInInspector]public float velocityY;
 	private float velocityZ;
 
 	public Vector3 velocity {
@@ -85,9 +85,11 @@ public class AviatorController : MonoBehaviour
 
 	void Update ()
 	{
+		Debug.Log (posController.NewPoseName);
 		if (parachuteIsOpened) {
 			if (parachute.localScale.magnitude < parachuteStrSqale.magnitude) {
 				parachute.localScale *= 1.0f + 5.0f * Time.deltaTime;
+
 			} else {
 				parachute.localScale = parachuteStrSqale;
 			}
@@ -110,7 +112,9 @@ public class AviatorController : MonoBehaviour
 		VelocityControl ();
 		if (posController.NewPoseName == "Salto" || posController.NewPoseName == "From Salto") {
 			velocity = velocityY * Vector3.up + velocityZ * VectorOperator.getProjectXZ (velocity.normalized, true);
-		} else if (posController.NewPoseName == "Open parachute") {
+
+
+		} else if (posController.NewPoseName == "Open parachute" || (parachuteIsOpened && posController.NewPoseName == "ParachuteDown") || (parachuteIsOpened && posController.NewPoseName == "ParachuteUp")) {
 			velocity = velocityY * Vector3.up - velocityZ * root.up;
 		} else {
 			velocity = velocityY * Vector3.up + velocityZ * root.forward;
@@ -118,6 +122,7 @@ public class AviatorController : MonoBehaviour
 		velocity *= 3.0f;
 		transform.position += velocity * Time.deltaTime;
 		transform.Rotate (rotationY * Time.deltaTime * Vector3.up);
+
 
 	}
 
@@ -148,7 +153,7 @@ public class AviatorController : MonoBehaviour
 			velocityZ = 13.0f;
 		} else if (posController.NewPoseName == "Squeeze") {
 			rotationY = 0.0f;
-			velocityY = -15.0f;
+			velocityY = -12.0f;
 			velocityZ = 17.0f;
 		} else if (posController.NewPoseName == "Proper kinesthetic") {
 			rotationY = 0.0f;
@@ -160,11 +165,11 @@ public class AviatorController : MonoBehaviour
 			velocityZ = 2.0f;
 		} else if (posController.NewPoseName == "Backfly position 2") {
 			rotationY = 0.0f;
-			velocityY = -12.0f;
+			velocityY = -8.0f;
 			velocityZ = 2.0f;
 		} else if (posController.NewPoseName == "Backfly position 3") {
 			rotationY = 0.0f;
-			velocityY = -9.0f;
+			velocityY = -7.0f;
 			velocityZ = 2.0f;
 		} else if (posController.NewPoseName == "Right turn") {
 			rotationY = 25.0f * posController.LerpTime;
@@ -176,7 +181,7 @@ public class AviatorController : MonoBehaviour
 			velocityZ = 12.0f;
 		} else if (posController.NewPoseName == "Salto") {
 			rotationY = 0.0f;
-			velocityY = -11.0f;
+			velocityY = -8.0f;
 			velocityZ = 10.0f;
 		} else if (posController.NewPoseName == "Rotate left") {
 			rotationY = -1.5f;
@@ -186,7 +191,11 @@ public class AviatorController : MonoBehaviour
 			rotationY = 1.5f;
 			velocityY = -6.0f;
 			velocityZ = 10.0f;
-		} else if (posController.NewPoseName == "Open parachute") {
+		} else if (posController.NewPoseName == "ParachuteDown") {
+			rotationY = 0.0f;
+			velocityY = 5.0f;
+			velocityZ = 13.0f;
+		} else if (posController.NewPoseName == "Open parachute" || (parachuteIsOpened && posController.NewPoseName == "ParachuteDown") || (parachuteIsOpened && posController.NewPoseName == "ParachuteUp")) {
 			float horizontal = 0.0f;
 			if (isMobilePlatform) {
 				horizontal = Mathf.Clamp (3.0f * Input.gyro.gravity.x, -1.0f, 1.0f);

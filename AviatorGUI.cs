@@ -5,6 +5,7 @@ using System.Collections.Generic;
 
 public class AviatorGUI : MonoBehaviour
 {
+	private bool doParachuteUp, doParachuteDown;
 	[SerializeField]
 	private JointsPoseController
 		posControlle;
@@ -29,6 +30,8 @@ public class AviatorGUI : MonoBehaviour
 
 	void Awake ()
 	{
+		doParachuteUp = false;
+		doParachuteDown = false;
 		poses.options = new List<Dropdown.OptionData> (0);
 		posesName = new List<string> (0);
 		foreach (JointPose pose in posControlle.Poses) {
@@ -75,12 +78,12 @@ public class AviatorGUI : MonoBehaviour
 		gyro.isActive = false;
 		string poseName = posesName [pose];
 		if (poseName == "Salto" || poseName == "Rotate left" || poseName == "Rotate right") {
-			posControlle.UpdateSpeed = 3.5f;
+			posControlle.UpdateSpeed = 1.5f;//3.5
 		} else {
-			posControlle.UpdateSpeed = 2.0f;
+			posControlle.UpdateSpeed = 1.5f;//2.0
 		}
 
-		posControlle.SetPose (poseName, 1.0f);
+		posControlle.SetPose (poseName, 0.5f);//1.0
 	}
 
 	void HandleOnAnimationComplete (JointsPoseController controller)
@@ -92,20 +95,20 @@ public class AviatorGUI : MonoBehaviour
 			posControlle.SetPose ("From Salto", 1.0f);
 			posControlle.UpdateSpeed = 3.5f;
 		} else if (posControlle.NewPoseName == "From Salto") {
-			posControlle.SetPose ("Stop n drop", 1.0f);
-			posControlle.UpdateSpeed = 4.0f;
+			posControlle.SetPose ("Stop n drop", 1.0f);//1
+			posControlle.UpdateSpeed = 2.5f;//4
 		} else if (posControlle.NewPoseName == "Rotate left") {
 			posControlle.SetPose ("From Rotate left", 1.0f);
 			posControlle.UpdateSpeed = 3.5f;
 		} else if (posControlle.NewPoseName == "From Rotate left") {
 			posControlle.SetPose ("Stop n drop", 1.0f);
-			posControlle.UpdateSpeed = 4.0f;
+			posControlle.UpdateSpeed = 3.0f;//4
 		} else if (posControlle.NewPoseName == "Rotate right") {
 			posControlle.SetPose ("From Rotate right", 1.0f);
-			posControlle.UpdateSpeed = 3.5f;
+			posControlle.UpdateSpeed = 2.5f;//3.5
 		} else if (posControlle.NewPoseName == "From Rotate right") {
 			posControlle.SetPose ("Stop n drop", 1.0f);
-			posControlle.UpdateSpeed = 4.0f;
+			posControlle.UpdateSpeed = 2.0f;//4.0
 		} 
 	}
 
@@ -143,25 +146,39 @@ public class AviatorGUI : MonoBehaviour
 			suitNumber = nextSuitNumber;
 		}*/
        
-		if (controller.parachuteIsOpened) {
-			return;
-		}
+		if (!controller.parachuteIsOpened) {
+			
             
-		//if (GUILayout.Button ("Open parachute", GUILayout.Height (height))) {
-		if (Input.GetKeyDown (KeyCode.Space)) {
-			Destroy (poses.gameObject);
-			controller.parachuteIsOpened = true;
-			posControlle.SetPose ("Open parachute", 1.0f);
-			if (isMobilePlatform) {
-				MouseOrbit.FindObjectOfType<MouseOrbit> ().enabled = true;
-				MouseOrbit.FindObjectOfType<MouseOrbit> ().distance = 7.5f;
+			//if (GUILayout.Button ("Open parachute", GUILayout.Height (height))) {
+			if (Input.GetKeyDown (KeyCode.Space)) {
+				Destroy (poses.gameObject);
+				controller.parachuteIsOpened = true;
+				posControlle.SetPose ("Open parachute", 1.0f);
+				if (isMobilePlatform) {
+					MouseOrbit.FindObjectOfType<MouseOrbit> ().enabled = true;
+					MouseOrbit.FindObjectOfType<MouseOrbit> ().distance = 7.5f;
+				}
+			}
+		} else {
+			if (posControlle.NewPoseName == "Open Parachute" && doParachuteUp == true) {
+				posControlle.SetPose ("ParachuteDown", 1.0f);
+			} else if (posControlle.NewPoseName == "ParachuteDown" && doParachuteDown == true) {
+				posControlle.SetPose ("Open parachute", 1.0f);
 			}
 		}
 	}
 
 	void Update ()
 	{
+		if (Input.GetKey (KeyCode.W) || Input.GetKey (KeyCode.UpArrow)) {
+			doParachuteUp = !doParachuteUp;
+		}
+
+		if (Input.GetKey (KeyCode.S) || Input.GetKey (KeyCode.DownArrow)) {
+			doParachuteDown = !doParachuteDown;
+		}
 		if (controller.parachuteIsOpened) {
+			
 			return;
 		}
 
@@ -208,7 +225,7 @@ public class AviatorGUI : MonoBehaviour
 			posControlle.SetPose ("Stop n drop", 1.0f);
 		}
 		if (Input.GetKeyDown (KeyCode.Alpha1)) {
-			posControlle.SetPose ("Salto", 0.2f);
+			posControlle.SetPose ("Salto", 1.0f);
 		}
 		if (Input.GetKeyDown (KeyCode.Alpha2)) {
 			posControlle.SetPose ("Backfly position 1", 1.0f);
@@ -226,10 +243,14 @@ public class AviatorGUI : MonoBehaviour
 		if (Input.GetKey (KeyCode.RightShift)) {
 			posControlle.SetPose ("Rotate right", 2.0f);
 		}
+		/*if (Input.GetKey (KeyCode.W)) {
+			if (controller.parachuteIsOpened == true)
+				posControlle.SetPose ("ParachuteDown", 1.0f);
+		}*/
 
 	}
 
-	void SetRandomPose ()
+	/*void SetRandomPose ()
 	{
 		JointPose pose = posControlle.Poses [Random.Range (0, posControlle.Poses.Count)];
 		int i = 0;
@@ -247,5 +268,5 @@ public class AviatorGUI : MonoBehaviour
 		}
 
 		posControlle.SetPose (pose.name, 1.0f);
-	}
+	}*/
 }

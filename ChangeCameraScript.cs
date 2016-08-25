@@ -58,7 +58,6 @@ public class ChangeCameraScript : MonoBehaviour
 				cameras [cameraIndex].enabled = true;
 			}		
 		}
-
 		if (Input.GetKeyDown (KeyCode.P)) {
 			onAndOffScreenshotCamera = !onAndOffScreenshotCamera;
 		}
@@ -68,12 +67,14 @@ public class ChangeCameraScript : MonoBehaviour
 		} else {
 			BackFromPhotoView ();
 		}
+
+
 	}
+
 
 	public void PhotoCameraButton ()
 	{
-		
-
+		onAndOffScreenshotCamera = true;
 		Time.timeScale = 0;
 		photoCameraView.enabled = true;
 		changeCameraPossible = false;
@@ -87,7 +88,7 @@ public class ChangeCameraScript : MonoBehaviour
 
 	public void BackFromPhotoView ()
 	{
-
+		onAndOffScreenshotCamera = false;
 		Time.timeScale = 1;
 		photoCameraView.enabled = false;
 		changeCameraPossible = true;
@@ -97,6 +98,8 @@ public class ChangeCameraScript : MonoBehaviour
 		backButton.SetActive (false);
 
 	}
+
+
 		
 
 
