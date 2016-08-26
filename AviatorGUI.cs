@@ -160,9 +160,14 @@ public class AviatorGUI : MonoBehaviour
 				}
 			}
 		} else {
-			if (posControlle.NewPoseName == "Open Parachute" && doParachuteUp == true) {
+			if (posControlle.NewPoseName == "Open parachute" && doParachuteUp == true) {
+				posControlle.SetPose ("ParachuteUp", 1.0f);
+			} else if (posControlle.NewPoseName == "ParachuteUp" && doParachuteUp == false) {
+				posControlle.SetPose ("Open parachute", 1.0f);
+			} 
+			if (posControlle.NewPoseName == "Open parachute" && doParachuteDown == true) {
 				posControlle.SetPose ("ParachuteDown", 1.0f);
-			} else if (posControlle.NewPoseName == "ParachuteDown" && doParachuteDown == true) {
+			} else if (posControlle.NewPoseName == "ParachuteDown" && doParachuteDown == false) {
 				posControlle.SetPose ("Open parachute", 1.0f);
 			}
 		}
@@ -170,14 +175,20 @@ public class AviatorGUI : MonoBehaviour
 
 	void Update ()
 	{
-		if (Input.GetKey (KeyCode.W) || Input.GetKey (KeyCode.UpArrow)) {
-			doParachuteUp = !doParachuteUp;
-		}
 
-		if (Input.GetKey (KeyCode.S) || Input.GetKey (KeyCode.DownArrow)) {
-			doParachuteDown = !doParachuteDown;
-		}
 		if (controller.parachuteIsOpened) {
+			if (Input.GetKey (KeyCode.W) || Input.GetKey (KeyCode.UpArrow)) {
+				doParachuteUp = true;
+			} else if (Input.GetKeyUp (KeyCode.W) || Input.GetKeyUp (KeyCode.UpArrow)) {
+				doParachuteUp = false;
+			}
+
+
+			if (Input.GetKey (KeyCode.S) || Input.GetKey (KeyCode.DownArrow)) {
+				doParachuteDown = true;
+			} else if (Input.GetKeyUp (KeyCode.S) || Input.GetKey (KeyCode.DownArrow)) {
+				doParachuteDown = false;
+			}
 			
 			return;
 		}
@@ -242,6 +253,10 @@ public class AviatorGUI : MonoBehaviour
 		}
 		if (Input.GetKey (KeyCode.RightShift)) {
 			posControlle.SetPose ("Rotate right", 2.0f);
+		}
+
+		if (Input.GetKeyDown (KeyCode.Z)) {
+			posControlle.SetPose ("ParachuteDown", 1.0f);
 		}
 		/*if (Input.GetKey (KeyCode.W)) {
 			if (controller.parachuteIsOpened == true)
