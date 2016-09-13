@@ -5,6 +5,7 @@ public class HitChecker : MonoBehaviour
 {
 	ChangeCameraScript ccs;
 	public GameObject bloodPart;
+	public Animator landingAnim;
 	[SerializeField]
 	private AviatorController controller;
 	[SerializeField]
@@ -22,6 +23,7 @@ public class HitChecker : MonoBehaviour
 	{
 		ccs = (ChangeCameraScript)FindObjectOfType (typeof(ChangeCameraScript)) as ChangeCameraScript;
 		bloodPart.SetActive (false);
+		landingAnim.enabled = false;
 		body = GetComponent<Rigidbody> ();
 		body.useGravity = false;
 		bodies = GetComponentsInChildren<Rigidbody> ();
@@ -38,16 +40,17 @@ public class HitChecker : MonoBehaviour
 	void OnCollisionEnter (Collision collision)
 	{
        
-		if (collision.collider.tag == "Ground") {
-			if (controller.parachuteIsOpened) {
-				rootBody.gameObject.AddComponent<FixedJoint> ();
-				leftHand.gameObject.AddComponent<FixedJoint> ();
-				rightHand.gameObject.AddComponent<FixedJoint> ();
-				StartCoroutine (WaitAndReload ());
-			}
+		if (collision.collider.tag == "Ground" && controller.parachuteIsOpened == false) {
+			//if ( {
+			rootBody.gameObject.AddComponent<FixedJoint> ();
+			leftHand.gameObject.AddComponent<FixedJoint> ();
+			rightHand.gameObject.AddComponent<FixedJoint> ();
+			StartCoroutine (WaitAndReload ());
+			//}
 			Destroy (body);
 			Destroy (GetComponent<Collider> ());
 			body.useGravity = true;
+			bloodPart.SetActive (true);
 			bodies = GetComponentsInChildren<Rigidbody> ();
 			if (ccs.cameraIndex == 1) {
 				ccs.brokenGlass.enabled = true;
@@ -61,9 +64,7 @@ public class HitChecker : MonoBehaviour
 				if (item != body) {
 					item.isKinematic = false;
 					item.GetComponent<Collider> ().enabled = true;
-					if (controller.parachuteIsOpened == false) {
-						bloodPart.SetActive (true);
-					}
+
 				}
 			}
 			Destroy (controller);
@@ -71,6 +72,9 @@ public class HitChecker : MonoBehaviour
 			if (ccs.cameraIndex == 0 && collision.collider.tag == "Ground") {
 				ccs.changeCameraPossible = false;
 			}
+		} else if (collision.collider.tag == "Ground" && controller.parachuteIsOpened == true) {
+			Destroy (controller);
+			landingAnim.enabled = true;
 		}
 	}
 
