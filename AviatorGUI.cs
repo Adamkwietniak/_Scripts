@@ -175,7 +175,7 @@ public class AviatorGUI : MonoBehaviour
 
 	void Update ()
 	{
-
+		
 		if (controller.parachuteIsOpened) {
 			if (Input.GetKey (KeyCode.W) || Input.GetKey (KeyCode.UpArrow)) {
 				doParachuteUp = true;
@@ -258,10 +258,7 @@ public class AviatorGUI : MonoBehaviour
 		if (Input.GetKeyDown (KeyCode.Z)) {
 			posControlle.SetPose ("ParachuteDown", 1.0f);
 		}
-		/*if (Input.GetKey (KeyCode.W)) {
-			if (controller.parachuteIsOpened == true)
-				posControlle.SetPose ("ParachuteDown", 1.0f);
-		}*/
+
 
 	}
 

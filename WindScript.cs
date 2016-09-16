@@ -16,6 +16,10 @@ public class WindScript : MonoBehaviour
 	private float valueOfAlpha = 0f;
 	private bool upColor = false;
 	private float blinkingSpeed = 3f;
+	[SerializeField]
+	private AviatorController controller;
+	[SerializeField]
+	private JointsPoseController posController;
 
 	void Start ()
 	{
@@ -26,7 +30,7 @@ public class WindScript : MonoBehaviour
 
 
 
-	void OnTriggerStay (Collider other)
+	/*void OnTriggerStay (Collider other)
 	{
 		
 		if (other.tag == "Player") {
@@ -40,6 +44,17 @@ public class WindScript : MonoBehaviour
 			source.PlayOneShot (windSound);
 			BlinkingImage ();
 
+		}
+	}*/
+
+	void Update ()
+	{
+		if (posController.NewPoseName == "Right turn") {
+			rbWingman.AddForce (Vector3.back * hoverForce, ForceMode.Acceleration);
+		} else if (posController.NewPoseName == "Left turn") {
+			rbWingman.AddForce (Vector3.right * hoverForce, ForceMode.Acceleration);
+		} else if (posController.NewPoseName == "Stop n drop") {
+			rbWingman.velocity = Vector3.zero;
 		}
 	}
 

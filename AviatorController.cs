@@ -3,6 +3,8 @@ using System.Collections;
 
 public class AviatorController : MonoBehaviour
 {
+	WindScript ws;
+	UnityStandardAssets.ImageEffects.MotionBlur motionBlur;
 	[SerializeField]
 	private JointsPoseController posController;
 	[SerializeField]
@@ -46,6 +48,8 @@ public class AviatorController : MonoBehaviour
 
 	public void OnAwake ()
 	{
+		ws = FindObjectOfType <WindScript> ();
+		motionBlur = FindObjectOfType<UnityStandardAssets.ImageEffects.MotionBlur> ();
 		parachuteStrSqale = parachute.localScale;
 		parachute.localScale = 0.01f * Vector3.one;
 		parachute.GetChild (0).GetComponent<MeshRenderer> ().enabled = false;
@@ -85,6 +89,7 @@ public class AviatorController : MonoBehaviour
 
 	void Update ()
 	{
+		
 		if (parachuteIsOpened) {
 			if (parachute.localScale.magnitude < parachuteStrSqale.magnitude) {
 				parachute.localScale *= 1.0f + 5.0f * Time.deltaTime;
@@ -126,16 +131,21 @@ public class AviatorController : MonoBehaviour
 
 	void VelocityControl ()
 	{
+		
+
 		if (posController.NewPoseName == "Squeeze") {
 			suitFrequency = 400f;
 			suitMagnitude = 210f;
+			motionBlur.blurAmount = 1f;
+
 		} else {
 			suitFrequency = 50f;
 			suitMagnitude = 30f;
+			motionBlur.blurAmount = 0.7f;
 		}
 		if (posController.NewPoseName == "Stop n drop") {
 			rotationY = 0.0f;
-			velocityY = -4.0f;
+			velocityY = -5.4f;
 			velocityZ = 10.0f;
 		} else if (posController.NewPoseName == "Slow n hold") {
 			rotationY = 0.0f;
@@ -170,13 +180,14 @@ public class AviatorController : MonoBehaviour
 			velocityY = -7.0f;
 			velocityZ = 2.0f;
 		} else if (posController.NewPoseName == "Right turn") {
-			rotationY = 25.0f * posController.LerpTime;
-			velocityY = -7.0f;
+			rotationY = 8.0f * posController.LerpTime;
+			velocityY = -4.4f;
 			velocityZ = 12.0f;
 		} else if (posController.NewPoseName == "Left turn") {
-			rotationY = -25.0f * posController.LerpTime;
-			velocityY = -7.0f;
-			velocityZ = 12.0f;
+			rotationY = -8.0f * posController.LerpTime;
+			velocityY = -4.5f;
+			velocityZ = 7.5f;
+
 		} else if (posController.NewPoseName == "Salto") {
 			rotationY = 0.0f;
 			velocityY = -8.0f;
