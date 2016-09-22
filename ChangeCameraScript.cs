@@ -15,6 +15,7 @@ public class ChangeCameraScript : MonoBehaviour
 	// bool umożliwiający lawirowanie między kamerami, będziemy go w pewnych momentach blokować.
 	private bool onAndOffScreenshotCamera = false;
 	// bool ułatwiające zmiane między trybem kamery screenshot, a powrotem do gry pod klawiszem "P".
+	CameraShake cmShake;
 
 
 
@@ -30,6 +31,8 @@ public class ChangeCameraScript : MonoBehaviour
 		photoCameraView.enabled = false;
 		backButton.SetActive (false);
 		changeCameraPossible = true;
+		cmShake = GameObject.FindGameObjectWithTag ("MainCamera").GetComponent<CameraShake> ();
+
 
 
 		for (int i = 1; i < cameras.Length; i++) {
@@ -46,6 +49,10 @@ public class ChangeCameraScript : MonoBehaviour
 	// Update is called once per frame
 	void Update ()
 	{
+
+		//cmShake.ShakeCamera (20.0f, 20.0f);
+
+	
 		if (Input.GetKeyDown (KeyCode.C) && changeCameraPossible == true) { // po wciśnięciu "C", lawirujemy między kamerami.
 			cameraIndex++; // indeksy służą do przypisania kamer.
 			if (cameraIndex < cameras.Length) {

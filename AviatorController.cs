@@ -24,9 +24,10 @@ public class AviatorController : MonoBehaviour
 	private Transform
 		aviatorRoot;
 
-	private float rotationY;
-	private float velocityY;
-	private float velocityZ;
+	[HideInInspector]public float rotationY;
+	[HideInInspector]public float velocityY;
+	[HideInInspector]public float velocityZ;
+	[HideInInspector]public float rotationX;
 
 	public Vector3 velocity {
 		get;
@@ -126,6 +127,7 @@ public class AviatorController : MonoBehaviour
 		velocity *= 3.0f;
 		transform.position += velocity * Time.deltaTime;
 		transform.Rotate (rotationY * Time.deltaTime * Vector3.up);
+		transform.Rotate (rotationX * Time.deltaTime * Vector3.right);
 
 	}
 
@@ -157,7 +159,7 @@ public class AviatorController : MonoBehaviour
 			velocityZ = 2.0f;
 		} else if (posController.NewPoseName == "Open up") {
 			rotationY = 0.0f;
-			velocityY = -5.0f;
+			velocityY = -3.0f;
 			velocityZ = 13.0f;
 		} else if (posController.NewPoseName == "Squeeze") {
 			rotationY = 0.0f;
@@ -180,11 +182,11 @@ public class AviatorController : MonoBehaviour
 			velocityY = -7.0f;
 			velocityZ = 2.0f;
 		} else if (posController.NewPoseName == "Right turn") {
-			rotationY = 8.0f * posController.LerpTime;
+			rotationY = 3.0f;/* * posController.LerpTime;*/
 			velocityY = -4.4f;
 			velocityZ = 12.0f;
 		} else if (posController.NewPoseName == "Left turn") {
-			rotationY = -8.0f * posController.LerpTime;
+			rotationY = -8.0f; /** posController.LerpTime;*/
 			velocityY = -4.5f;
 			velocityZ = 7.5f;
 
