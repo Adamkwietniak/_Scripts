@@ -3,6 +3,7 @@ using System.Collections;
 
 public class AviatorController : MonoBehaviour
 {
+	public Rigidbody rbWingman;
 	WindScript ws;
 	UnityStandardAssets.ImageEffects.MotionBlur motionBlur;
 	[SerializeField]
@@ -90,7 +91,15 @@ public class AviatorController : MonoBehaviour
 
 	void Update ()
 	{
-		
+		if (posController.NewPoseName == "Right turn" && rbWingman != null) {
+			rbWingman.AddForce (Vector3.back * 21.0f, ForceMode.Acceleration);
+		} else if (posController.NewPoseName == "Left turn" && rbWingman != null) {
+			rbWingman.AddForce (Vector3.right * 21.0f, ForceMode.Acceleration);
+		} else if (posController.NewPoseName == "Stop n drop" && rbWingman != null) {
+			rbWingman.velocity = Vector3.zero;
+
+
+		}
 		if (parachuteIsOpened) {
 			if (parachute.localScale.magnitude < parachuteStrSqale.magnitude) {
 				parachute.localScale *= 1.0f + 5.0f * Time.deltaTime;
@@ -128,6 +137,7 @@ public class AviatorController : MonoBehaviour
 		transform.position += velocity * Time.deltaTime;
 		transform.Rotate (rotationY * Time.deltaTime * Vector3.up);
 		transform.Rotate (rotationX * Time.deltaTime * Vector3.right);
+
 
 	}
 
@@ -186,7 +196,7 @@ public class AviatorController : MonoBehaviour
 			velocityY = -4.4f;
 			velocityZ = 12.0f;
 		} else if (posController.NewPoseName == "Left turn") {
-			rotationY = -8.0f; /** posController.LerpTime;*/
+			rotationY = -3.0f; /** posController.LerpTime;*/
 			velocityY = -4.5f;
 			velocityZ = 7.5f;
 

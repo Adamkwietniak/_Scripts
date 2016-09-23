@@ -8,10 +8,10 @@ public class WindScript : MonoBehaviour
 
 	public float hoverForce;
 	public Rigidbody rbWingman;
-	//private AudioSource source;
+	private AudioSource source;
 	public AudioClip windSound;
 	private float randomNumber;
-	//private bool wingDirectionBool;
+	private bool wingDirectionBool;
 	public Image windWarningImage;
 	private float valueOfAlpha = 0f;
 	private bool upColor = false;
@@ -21,16 +21,19 @@ public class WindScript : MonoBehaviour
 	[SerializeField]
 	private JointsPoseController posController;
 
+
+
 	void Start ()
 	{
 		//source = GetComponent <AudioSource> ();
 		//wingDirectionBool = (Random.Range (0, 2) == 0);
 		windWarningImage.enabled = false;
+
 	}
 
 
 
-	/*void OnTriggerStay (Collider other)
+	void OnTriggerStay (Collider other)
 	{
 		
 		if (other.tag == "Player") {
@@ -45,35 +48,25 @@ public class WindScript : MonoBehaviour
 			BlinkingImage ();
 
 		}
-	}*/
-
-	void Update ()
-	{
-		if (posController.NewPoseName == "Right turn" && rbWingman != null) {
-			rbWingman.AddForce (Vector3.back * hoverForce, ForceMode.Acceleration);
-		} else if (posController.NewPoseName == "Left turn" && rbWingman != null) {
-			rbWingman.AddForce (Vector3.right * hoverForce, ForceMode.Acceleration);
-		} else if (posController.NewPoseName == "Stop n drop" && rbWingman != null) {
-			rbWingman.velocity = Vector3.zero;
-			controller.rotationX = 0.0f;
-
-		} /*else if (posController.NewPoseName == "Open up" && rbWingman != null) {
-			rbWingman.AddForce (Vector3.up * 5.0f, ForceMode.Acceleration);
-			controller.rotationX = -7.0f * posController.LerpTime;
-		}*/
-
-
 	}
+
+	/*void Update ()
+	{
+
+
+
+
+	}*/
 
 	
 
-	/*void OnTriggerExit (Collider other)
+	void OnTriggerExit (Collider other)
 	{
 		rbWingman.velocity = Vector3.zero;  /// powrót do normalnej prędkości
 		rbWingman.angularVelocity = Vector3.zero;
 		windWarningImage.enabled = false;
 
-	}*/
+	}
 
 	private void BlinkingImage () // metoda odpowiedzialna za mryganie znaczka "uważaj wiater se wieje"
 	{
@@ -96,7 +89,6 @@ public class WindScript : MonoBehaviour
 		windWarningImage.color = new Color (255f, 255f, 255f, valueOfAlpha);
 	}
 
-	
 
 }
 

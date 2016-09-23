@@ -16,7 +16,8 @@ public class ChangeCameraScript : MonoBehaviour
 	private bool onAndOffScreenshotCamera = false;
 	// bool ułatwiające zmiane między trybem kamery screenshot, a powrotem do gry pod klawiszem "P".
 	CameraShake cmShake;
-
+	public float defaultTimeScale = 1;
+	private bool NormalCameraBool = true;
 
 
 
@@ -24,7 +25,8 @@ public class ChangeCameraScript : MonoBehaviour
 	// Use this for initialization
 	void Start ()
 	{
-
+		
+		Time.timeScale = defaultTimeScale;
 		brokenGlass.enabled = false;
 		bloodOnScreen.enabled = false;
 		cameraIndex = 0;
@@ -70,9 +72,15 @@ public class ChangeCameraScript : MonoBehaviour
 		}
 
 		if (onAndOffScreenshotCamera == true) {
-			PhotoCameraButton ();
+			if (NormalCameraBool == true) {
+				PhotoCameraButton ();
+				NormalCameraBool = false;
+			}
 		} else {
-			BackFromPhotoView ();
+			if (NormalCameraBool == false) {
+				BackFromPhotoView ();
+				NormalCameraBool = true;
+			}
 		}
 
 
@@ -81,6 +89,7 @@ public class ChangeCameraScript : MonoBehaviour
 
 	public void PhotoCameraButton ()
 	{
+		
 		onAndOffScreenshotCamera = true;
 		Time.timeScale = 0;
 		photoCameraView.enabled = true;
@@ -95,8 +104,9 @@ public class ChangeCameraScript : MonoBehaviour
 
 	public void BackFromPhotoView ()
 	{
+		
 		onAndOffScreenshotCamera = false;
-		Time.timeScale = 1;
+		Time.timeScale = defaultTimeScale;
 		photoCameraView.enabled = false;
 		changeCameraPossible = true;
 		if (cameras.Length > 0) {
