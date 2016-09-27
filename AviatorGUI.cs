@@ -90,7 +90,7 @@ public class AviatorGUI : MonoBehaviour
 	{
 		if (posControlle.NewPoseName == "T_Pose") {
 			posControlle.SetPose ("Stop n drop", 1.0f);
-			posControlle.UpdateSpeed = 4.0f;
+			posControlle.UpdateSpeed = 3.0f;
 		} else if (posControlle.NewPoseName == "Salto") {
 			posControlle.SetPose ("From Salto", 1.0f);
 			posControlle.UpdateSpeed = 3.5f;
@@ -116,21 +116,21 @@ public class AviatorGUI : MonoBehaviour
 	void OnGUI ()
 	{
 		//GUILayout.Label ("\n Email: vagho.srapyan@gmail.com ");
-		if (controller) {
-			/*if (!isMobilePlatform) {
+		//if (controller) {
+		/*if (!isMobilePlatform) {
 				GUILayout.Label ("\n  Space Down - stop camera control ,\n  MouseOrbit - run camera control,\n  Mouse ScrollWheel - camera zoom.  ");
-			} */
-			/*GUILayout.Label ("     Horizontal velocity m/s: " + Vector3.ProjectOnPlane (controller.velocity, Vector3.up).magnitude.ToString ("0") +
-			"\n     Vertical velocity m/s: " + Vector3.Project (controller.velocity, Vector3.up).magnitude.ToString ("0"));*/
+			} 
+			GUILayout.Label ("     Horizontal velocity m/s: " + Vector3.ProjectOnPlane (controller.velocity, Vector3.up).magnitude.ToString ("0") +
+			"\n     Vertical velocity m/s: " + Vector3.Project (controller.velocity, Vector3.up).magnitude.ToString ("0"));
 
 			RaycastHit hit;
 			Ray ray = new Ray (controller.transform.position, Vector3.down);
-			/*if (Physics.Raycast (ray, out hit, 100000.0f, mask)) {
+			if (Physics.Raycast (ray, out hit, 100000.0f, mask)) {
 				GUILayout.Label ("     Ground height m: " + Vector3.Distance (controller.transform.position, hit.point).ToString ("0") +
 				"\n     Height m: " + Mathf.Clamp (controller.transform.position.y, 0.0f, 100000.0f).ToString ("0"));
-			}*/
+			}
 		}
-		float height = isMobilePlatform ? 50.0f : 20.0f;
+		//float height = isMobilePlatform ? 50.0f : 20.0f;
 		/*if (GUILayout.Button ("Reload", GUILayout.Height (height))) {
 			Application.LoadLevel (Application.loadedLevel);
 		}*/
@@ -139,7 +139,7 @@ public class AviatorGUI : MonoBehaviour
 		}
 		//GUILayout.Label ("");
        
-		int nextSuitNumber = suitNumber + 1 < suits.Length ? suitNumber + 1 : 0;
+		//int nextSuitNumber = suitNumber + 1 < suits.Length ? suitNumber + 1 : 0;
 		/*if (GUILayout.Button ("Suit: " + suits [nextSuitNumber].name, GUILayout.Height (height))) {
 			suitMat.mainTexture = suits [nextSuitNumber];
 			helmetMat.mainTexture = suits [nextSuitNumber];

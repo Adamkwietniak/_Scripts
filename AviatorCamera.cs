@@ -33,7 +33,7 @@ public class AviatorCamera : MonoBehaviour
 		}
 		//position = VectorOperator.getWordPosition(aviator, localPosition);
 		if (controller.inAnimate) {
-			_transform.position = Vector3.Lerp (_transform.position, position, 0.5f * damp * Time.deltaTime);
+			_transform.position = Vector3.Lerp (_transform.position, position, 1.0f * damp * Time.deltaTime);
 		} else {
 			_transform.position = Vector3.Lerp (_transform.position, position, damp * Time.deltaTime);
 		}

@@ -29,11 +29,10 @@ public class CameraShake : MonoBehaviour
 	public float smoothAmount = 5f;
 	//Amount to smooth
 
-	void Start ()
+	void Update ()
 	{
-
-		if (debugMode)
-			ShakeCamera ();
+		//ShakeCamera ();
+		StartCoroutine (Shake ());//Only call the coroutine if it isn't currently running. Otherwise, just set the variables.
 	}
 
 
@@ -56,8 +55,8 @@ public class CameraShake : MonoBehaviour
 		shakeDuration += duration;//Add to the current time.
 		startDuration = shakeDuration;//Reset the start time.
 
-		if (!isRunning)
-			StartCoroutine (Shake ());//Only call the coroutine if it isn't currently running. Otherwise, just set the variables.
+	
+			
 	}
 
 

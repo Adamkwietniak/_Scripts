@@ -1,9 +1,35 @@
 ﻿using UnityEngine;
 using System.Collections;
 
+[System.Serializable]
 public class AviatorController : MonoBehaviour
 {
-	public Rigidbody rbWingman;
+	public float MaxTimeToClick { get { return maxTimeToClick; } set { maxTimeToClick = value; } }
+
+	public float MinTimeToClick { get { return minTimeToClick; } set { minTimeToClick = value; } }
+
+	private float maxTimeToClick = 0.60f;
+	private float minTimeToClick = 0.05f;
+	private bool ClickedTwice = false;
+
+	private float minCurrentTime;
+	private float maxCurrentTime;
+
+	public bool DoubleClick ()
+	{
+		if (Time.time >= minCurrentTime && Time.time <= maxCurrentTime) {
+			ClickedTwice = true;
+			minCurrentTime = 0f;
+			maxCurrentTime = 0f;
+			return true;
+		}
+
+		minCurrentTime = Time.time + minTimeToClick;
+		maxCurrentTime = Time.time + MaxTimeToClick;
+
+		return false;
+	}
+
 	WindScript ws;
 	UnityStandardAssets.ImageEffects.MotionBlur motionBlur;
 	[SerializeField]
@@ -28,7 +54,7 @@ public class AviatorController : MonoBehaviour
 	[HideInInspector]public float rotationY;
 	[HideInInspector]public float velocityY;
 	[HideInInspector]public float velocityZ;
-	[HideInInspector]public float rotationX;
+
 
 	public Vector3 velocity {
 		get;
@@ -91,15 +117,6 @@ public class AviatorController : MonoBehaviour
 
 	void Update ()
 	{
-		if (posController.NewPoseName == "Right turn" && rbWingman != null) {
-			rbWingman.AddForce (Vector3.back * 21.0f, ForceMode.Acceleration);
-		} else if (posController.NewPoseName == "Left turn" && rbWingman != null) {
-			rbWingman.AddForce (Vector3.right * 21.0f, ForceMode.Acceleration);
-		} else if (posController.NewPoseName == "Stop n drop" && rbWingman != null) {
-			rbWingman.velocity = Vector3.zero;
-
-
-		}
 		if (parachuteIsOpened) {
 			if (parachute.localScale.magnitude < parachuteStrSqale.magnitude) {
 				parachute.localScale *= 1.0f + 5.0f * Time.deltaTime;
@@ -136,26 +153,28 @@ public class AviatorController : MonoBehaviour
 		velocity *= 3.0f;
 		transform.position += velocity * Time.deltaTime;
 		transform.Rotate (rotationY * Time.deltaTime * Vector3.up);
-		transform.Rotate (rotationX * Time.deltaTime * Vector3.right);
+		//transform.Rotate (rotationX * Time.deltaTime * Vector3.right);
+
 
 
 	}
 
 	void VelocityControl ()
 	{
-		
 
+		Debug.Log (rotationY);
 		if (posController.NewPoseName == "Squeeze") {
 			suitFrequency = 400f;
 			suitMagnitude = 210f;
-			motionBlur.blurAmount = 1f;
+			motionBlur.blurAmount = 0.8f;
 
 		} else {
 			suitFrequency = 50f;
 			suitMagnitude = 30f;
-			motionBlur.blurAmount = 0.7f;
+			motionBlur.blurAmount = 0.55f;
 		}
 		if (posController.NewPoseName == "Stop n drop") {
+			ClickedTwice = false;
 			rotationY = 0.0f;
 			velocityY = -5.4f;
 			velocityZ = 10.0f;
@@ -192,14 +211,21 @@ public class AviatorController : MonoBehaviour
 			velocityY = -7.0f;
 			velocityZ = 2.0f;
 		} else if (posController.NewPoseName == "Right turn") {
-			rotationY = 3.0f;/* * posController.LerpTime;*/
+			rotationY = 3.0f /** posController.LerpTime*/;
 			velocityY = -4.4f;
 			velocityZ = 12.0f;
+			DoubleClick ();
+			transform.Translate (Vector3.right * 12.0f * Time.deltaTime);
+			if (ClickedTwice == true)
+				rotationY = 10.0f;
 		} else if (posController.NewPoseName == "Left turn") {
-			rotationY = -3.0f; /** posController.LerpTime;*/
+			rotationY = -3.0f /** posController.LerpTime*/;
 			velocityY = -4.5f;
 			velocityZ = 7.5f;
-
+			transform.Translate (Vector3.right * -15.0f * Time.deltaTime);
+			DoubleClick ();
+			if (ClickedTwice == true)
+				rotationY = -10.0f;
 		} else if (posController.NewPoseName == "Salto") {
 			rotationY = 0.0f;
 			velocityY = -8.0f;
@@ -278,4 +304,5 @@ public class JointsRandomAnimations
 		currentValue = Vector3.Lerp (minValue, maxValue, 0.5f + 0.5f * Mathf.Sin (frequency * time));
 		joint.localRotation = Quaternion.Lerp (joint.localRotation, Quaternion.Euler (currentValue), 10.0f * Time.deltaTime);
 	}
+
 }
