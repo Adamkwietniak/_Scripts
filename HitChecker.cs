@@ -5,7 +5,7 @@ public class HitChecker : MonoBehaviour
 {
 	ChangeCameraScript ccs;
 	public GameObject bloodPart;
-	public Animator landingAnim;
+	//public Animator landingAnim;
 	[SerializeField]
 	private AviatorController controller;
 	[SerializeField]
@@ -18,12 +18,14 @@ public class HitChecker : MonoBehaviour
 	private Rigidbody leftHand;
 	[SerializeField]
 	private Rigidbody rightHand;
+	CameraWithShakeScript cWSS;
 
 	void Awake ()
 	{
+		cWSS = FindObjectOfType <CameraWithShakeScript> ();
 		ccs = (ChangeCameraScript)FindObjectOfType (typeof(ChangeCameraScript)) as ChangeCameraScript;
 		bloodPart.SetActive (false);
-		landingAnim.enabled = false;
+		//landingAnim.enabled = false;
 		body = GetComponent<Rigidbody> ();
 		body.useGravity = false;
 		bodies = GetComponentsInChildren<Rigidbody> ();
@@ -40,13 +42,14 @@ public class HitChecker : MonoBehaviour
 	void OnCollisionEnter (Collision collision)
 	{
        
-		if (collision.collider.tag == "Ground" && controller.parachuteIsOpened == false) {
-			//if ( {
-			rootBody.gameObject.AddComponent<FixedJoint> ();
-			leftHand.gameObject.AddComponent<FixedJoint> ();
-			rightHand.gameObject.AddComponent<FixedJoint> ();
-			StartCoroutine (WaitAndReload ());
-			//}
+		if (collision.collider.tag == "Ground") {
+			if (controller.parachuteIsOpened == false) {
+				rootBody.gameObject.AddComponent<FixedJoint> ();
+				leftHand.gameObject.AddComponent<FixedJoint> ();
+				rightHand.gameObject.AddComponent<FixedJoint> ();
+				StartCoroutine (WaitAndReload ());
+				cWSS.shake = 0.0f;
+			}
 			Destroy (body);
 			Destroy (GetComponent<Collider> ());
 			body.useGravity = true;
@@ -74,7 +77,8 @@ public class HitChecker : MonoBehaviour
 			}
 		} else if (collision.collider.tag == "Ground" && controller.parachuteIsOpened == true) {
 			Destroy (controller);
-			landingAnim.enabled = true;
+			//landingAnim.enabled = true;
+
 		}
 	}
 

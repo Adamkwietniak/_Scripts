@@ -65,7 +65,7 @@ public class CollectRingsScript : MonoBehaviour
 
 		default:
 			return true;
-			break;
+		
 		}
 		return false;
 	}

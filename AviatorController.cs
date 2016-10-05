@@ -8,7 +8,7 @@ public class AviatorController : MonoBehaviour
 
 	public float MinTimeToClick { get { return minTimeToClick; } set { minTimeToClick = value; } }
 
-	private float maxTimeToClick = 0.60f;
+	private float maxTimeToClick = 0.15f;
 	private float minTimeToClick = 0.05f;
 	private bool ClickedTwice = false;
 
@@ -30,6 +30,8 @@ public class AviatorController : MonoBehaviour
 		return false;
 	}
 
+	public float timerToOpenUp = 5.0f;
+	public bool openUpGetYouUp;
 	WindScript ws;
 	UnityStandardAssets.ImageEffects.MotionBlur motionBlur;
 	[SerializeField]
@@ -70,12 +72,13 @@ public class AviatorController : MonoBehaviour
 	public bool parachuteIsOpened = false;
 
 	[SerializeField]
-	private Transform parachute;
+	public Transform parachute;
 	private Vector3 parachuteStrSqale;
 	private bool isMobilePlatform;
 
 	public void OnAwake ()
 	{
+		openUpGetYouUp = false;
 		ws = FindObjectOfType <WindScript> ();
 		motionBlur = FindObjectOfType<UnityStandardAssets.ImageEffects.MotionBlur> ();
 		parachuteStrSqale = parachute.localScale;
@@ -117,6 +120,17 @@ public class AviatorController : MonoBehaviour
 
 	void Update ()
 	{
+		while (timerToOpenUp > 0) {
+			openUpGetYouUp = false;
+			timerToOpenUp -= Time.deltaTime;
+			break;
+		}
+
+		if (timerToOpenUp < 0) {
+			timerToOpenUp = 5.0f;
+			openUpGetYouUp = true;
+
+		}
 		if (parachuteIsOpened) {
 			if (parachute.localScale.magnitude < parachuteStrSqale.magnitude) {
 				parachute.localScale *= 1.0f + 5.0f * Time.deltaTime;
@@ -162,10 +176,10 @@ public class AviatorController : MonoBehaviour
 	void VelocityControl ()
 	{
 
-		Debug.Log (rotationY);
+		//Debug.Log (rotationY);
 		if (posController.NewPoseName == "Squeeze") {
-			suitFrequency = 400f;
-			suitMagnitude = 210f;
+			suitFrequency = 320;
+			suitMagnitude = 150;
 			motionBlur.blurAmount = 0.8f;
 
 		} else {
@@ -180,8 +194,8 @@ public class AviatorController : MonoBehaviour
 			velocityZ = 10.0f;
 		} else if (posController.NewPoseName == "Slow n hold") {
 			rotationY = 0.0f;
-			velocityY = -7.0f;
-			velocityZ = 15.0f;
+			velocityY = -9.0f;
+			velocityZ = 10.0f;
 		} else if (posController.NewPoseName == "Energency stop") {
 			rotationY = 0.0f;
 			velocityY = -10.0f;
@@ -189,11 +203,17 @@ public class AviatorController : MonoBehaviour
 		} else if (posController.NewPoseName == "Open up") {
 			rotationY = 0.0f;
 			velocityY = -3.0f;
-			velocityZ = 13.0f;
+			velocityZ = 8.0f;
+			if (openUpGetYouUp == true) {
+				transform.Translate (Vector3.up * 10.0f * Time.deltaTime);
+			} else {
+				transform.Translate (Vector3.zero);
+			}
+
 		} else if (posController.NewPoseName == "Squeeze") {
 			rotationY = 0.0f;
-			velocityY = -12.0f;
-			velocityZ = 17.0f;
+			velocityY = -14.0f;
+			velocityZ = 10.0f;
 		} else if (posController.NewPoseName == "Proper kinesthetic") {
 			rotationY = 0.0f;
 			velocityY = -4.0f;
@@ -215,14 +235,14 @@ public class AviatorController : MonoBehaviour
 			velocityY = -4.4f;
 			velocityZ = 12.0f;
 			DoubleClick ();
-			transform.Translate (Vector3.right * 12.0f * Time.deltaTime);
+			transform.Translate (Vector3.right * 18.0f * Time.deltaTime);
 			if (ClickedTwice == true)
 				rotationY = 10.0f;
 		} else if (posController.NewPoseName == "Left turn") {
 			rotationY = -3.0f /** posController.LerpTime*/;
 			velocityY = -4.5f;
 			velocityZ = 7.5f;
-			transform.Translate (Vector3.right * -15.0f * Time.deltaTime);
+			transform.Translate (Vector3.right * -18.0f * Time.deltaTime);
 			DoubleClick ();
 			if (ClickedTwice == true)
 				rotationY = -10.0f;

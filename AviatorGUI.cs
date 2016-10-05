@@ -5,6 +5,7 @@ using System.Collections.Generic;
 
 public class AviatorGUI : MonoBehaviour
 {
+	CameraWithShakeScript cWSS;
 	private bool doParachuteUp, doParachuteDown;
 	[SerializeField]
 	private JointsPoseController
@@ -69,6 +70,7 @@ public class AviatorGUI : MonoBehaviour
 	void Start ()
 	{
 		poses.value = 0;
+		cWSS = FindObjectOfType <CameraWithShakeScript> ();
 		//poseButton.onClick.AddListener(SetRandomPose);
 		posControlle.OnAnimationComplete += HandleOnAnimationComplete;
 	}
@@ -152,6 +154,7 @@ public class AviatorGUI : MonoBehaviour
 			//if (GUILayout.Button ("Open parachute", GUILayout.Height (height))) {
 			if (Input.GetKeyDown (KeyCode.Space)) {
 				Destroy (poses.gameObject);
+				cWSS.shake = 0.01f;
 				controller.parachuteIsOpened = true;
 				posControlle.SetPose ("Open parachute", 1.0f);
 				if (isMobilePlatform) {
