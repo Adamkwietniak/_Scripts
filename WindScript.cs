@@ -50,13 +50,6 @@ public class WindScript : MonoBehaviour
 		}
 	}
 
-	/*void Update ()
-	{
-
-
-
-
-	}*/
 
 	
 

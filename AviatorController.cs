@@ -8,8 +8,8 @@ public class AviatorController : MonoBehaviour
 
 	public float MinTimeToClick { get { return minTimeToClick; } set { minTimeToClick = value; } }
 
-	private float maxTimeToClick = 0.13f;
-	private float minTimeToClick = 0.06f;
+	private float maxTimeToClick = 0.8f;
+	private float minTimeToClick = 0.5f;
 	private bool ClickedTwice = false;
 
 	private float minCurrentTime;
@@ -31,7 +31,6 @@ public class AviatorController : MonoBehaviour
 	}
 
 	public float timerToOpenUp = 8.0f;
-	public bool openUpGetYouUp;
 	WindScript ws;
 	UnityStandardAssets.ImageEffects.MotionBlur motionBlur;
 	[SerializeField]
@@ -78,8 +77,6 @@ public class AviatorController : MonoBehaviour
 
 	public void OnAwake ()
 	{
-		//timerToOpenUp = 0.0f;
-		openUpGetYouUp = false;
 		ws = FindObjectOfType <WindScript> ();
 		motionBlur = FindObjectOfType<UnityStandardAssets.ImageEffects.MotionBlur> ();
 		parachuteStrSqale = parachute.localScale;
@@ -121,9 +118,12 @@ public class AviatorController : MonoBehaviour
 
 	void Update ()
 	{
+
+
 		if (parachuteIsOpened) {
 			if (parachute.localScale.magnitude < parachuteStrSqale.magnitude) {
 				parachute.localScale *= 1.0f + 5.0f * Time.deltaTime;
+
 			} else {
 				parachute.localScale = parachuteStrSqale;
 			}
@@ -163,12 +163,18 @@ public class AviatorController : MonoBehaviour
 
 	}
 
+	public void TimerRecovery ()
+	{
+		if (timerToOpenUp < 8) {
+			timerToOpenUp += Time.deltaTime;
+		} 
+	}
 
 	void VelocityControl ()
 	{
 
 
-		//Debug.Log (rotationY);
+		Debug.Log (rotationY);
 		if (posController.NewPoseName == "Squeeze") {
 			suitFrequency = 320;
 			suitMagnitude = 150;
@@ -184,31 +190,33 @@ public class AviatorController : MonoBehaviour
 			rotationY = 0.0f;
 			velocityY = -5.4f;
 			velocityZ = 10.0f;
+			TimerRecovery ();
 		} else if (posController.NewPoseName == "Slow n hold") {
 			rotationY = 0.0f;
 			velocityY = -9.0f;
 			velocityZ = 10.0f;
+			TimerRecovery ();
 		} else if (posController.NewPoseName == "Energency stop") {
 			rotationY = 0.0f;
 			velocityY = -10.0f;
 			velocityZ = 2.0f;
+			TimerRecovery ();
 		} else if (posController.NewPoseName == "Open up") {
 			rotationY = 0.0f;
 			velocityY = -3.0f;
 			velocityZ = 6.0f;
+			timerToOpenUp -= Time.deltaTime;
 
 			while (true) {
-				if (timerToOpenUp > 0) {
-					openUpGetYouUp = false;
-					timerToOpenUp -= Time.deltaTime;
+				if (timerToOpenUp < 0) {
+					timerToOpenUp = 8;
 				}
-				if (timerToOpenUp < 1.5 && timerToOpenUp > 0) {
-					openUpGetYouUp = true;
-					transform.Translate (Vector3.up * 18.0f * Time.deltaTime);
-					StartCoroutine (OpenUpController ());
+				if (timerToOpenUp < 7.9 && timerToOpenUp > 6.5) {
+					transform.Translate (Vector3.up * 13.0f * Time.deltaTime);
 				} else {
 					transform.Translate (Vector3.zero);
 				}
+
 				break;
 			}
 
@@ -216,27 +224,33 @@ public class AviatorController : MonoBehaviour
 			rotationY = 0.0f;
 			velocityY = -14.0f;
 			velocityZ = 10.0f;
+			TimerRecovery ();
 		} else if (posController.NewPoseName == "Proper kinesthetic") {
 			rotationY = 0.0f;
 			velocityY = -4.0f;
 			velocityZ = 7.0f;
+			TimerRecovery ();
 		} else if (posController.NewPoseName == "Backfly position 1") {
 			rotationY = 0.0f;
 			velocityY = -15.0f;
 			velocityZ = 2.0f;
+			TimerRecovery ();
 		} else if (posController.NewPoseName == "Backfly position 2") {
 			rotationY = 0.0f;
 			velocityY = -8.0f;
 			velocityZ = 2.0f;
+			TimerRecovery ();
 		} else if (posController.NewPoseName == "Backfly position 3") {
 			rotationY = 0.0f;
 			velocityY = -7.0f;
 			velocityZ = 2.0f;
+			TimerRecovery ();
 		} else if (posController.NewPoseName == "Right turn") {
 			rotationY = 3.0f /** posController.LerpTime*/;
 			velocityY = -4.4f;
 			velocityZ = 12.0f;
 			DoubleClick ();
+			TimerRecovery ();
 			if (ClickedTwice == false) {
 				transform.Translate (Vector3.right * 18.0f * Time.deltaTime);
 			} else if (ClickedTwice == true)
@@ -245,6 +259,7 @@ public class AviatorController : MonoBehaviour
 			rotationY = -3.0f /** posController.LerpTime*/;
 			velocityY = -4.5f;
 			velocityZ = 7.5f;
+			TimerRecovery ();
 			DoubleClick ();
 			if (ClickedTwice == false) {
 				transform.Translate (Vector3.right * -18.0f * Time.deltaTime);
@@ -254,14 +269,19 @@ public class AviatorController : MonoBehaviour
 			rotationY = 0.0f;
 			velocityY = -8.0f;
 			velocityZ = 10.0f;
+			TimerRecovery ();
 		} else if (posController.NewPoseName == "Rotate left") {
 			rotationY = -1.5f;
 			velocityY = -6.0f;
 			velocityZ = 10.0f;
+			transform.Translate (Vector3.right * -18.0f * Time.deltaTime);
+			TimerRecovery ();
 		} else if (posController.NewPoseName == "Rotate right") {
 			rotationY = 1.5f;
 			velocityY = -6.0f;
 			velocityZ = 10.0f;
+			transform.Translate (Vector3.right * 18.0f * Time.deltaTime);
+			TimerRecovery ();
 		} else if (posController.NewPoseName == "Open parachute" || (parachuteIsOpened && posController.NewPoseName == "ParachuteDown") || (parachuteIsOpened && posController.NewPoseName == "ParachuteUp")) {
 			float horizontal = 0.0f;
 			if (isMobilePlatform) {
@@ -279,13 +299,6 @@ public class AviatorController : MonoBehaviour
 		}
 	}
 
-	public IEnumerator OpenUpController ()
-	{
-		if (openUpGetYouUp == true) {
-			yield return new WaitForSeconds (2.0f);
-			timerToOpenUp = 8.0f;
-		} 
-	}
 
 	public void SetDefaultRotations ()
 	{
