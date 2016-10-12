@@ -73,8 +73,10 @@ public class ChangeCameraScript : MonoBehaviour
 
 		if (onAndOffScreenshotCamera == true) {
 			if (NormalCameraBool == true) {
-				PhotoCameraButton ();
-				NormalCameraBool = false;
+				if (changeCameraPossible == true) {
+					PhotoCameraButton ();
+					NormalCameraBool = false;
+				}
 			}
 		} else {
 			if (NormalCameraBool == false) {
@@ -82,7 +84,6 @@ public class ChangeCameraScript : MonoBehaviour
 				NormalCameraBool = true;
 			}
 		}
-
 
 	}
 

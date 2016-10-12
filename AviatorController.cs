@@ -30,6 +30,7 @@ public class AviatorController : MonoBehaviour
 		return false;
 	}
 
+	private int i;
 	public float timerToOpenUp = 8.0f;
 	WindScript ws;
 	UnityStandardAssets.ImageEffects.MotionBlur motionBlur;
@@ -55,6 +56,7 @@ public class AviatorController : MonoBehaviour
 	[HideInInspector]public float rotationY;
 	[HideInInspector]public float velocityY;
 	[HideInInspector]public float velocityZ;
+	private float angle = 45f;
 
 
 	public Vector3 velocity {
@@ -123,7 +125,9 @@ public class AviatorController : MonoBehaviour
 		if (parachuteIsOpened) {
 			if (parachute.localScale.magnitude < parachuteStrSqale.magnitude) {
 				parachute.localScale *= 1.0f + 5.0f * Time.deltaTime;
-
+				for (i = 5; i < 11; i++) {
+					joints [i].frequency = 0f;
+				}
 			} else {
 				parachute.localScale = parachuteStrSqale;
 			}
@@ -146,7 +150,7 @@ public class AviatorController : MonoBehaviour
 		VelocityControl ();
 		if (posController.NewPoseName == "Salto" || posController.NewPoseName == "From Salto") {
 			velocity = velocityY * Vector3.up + velocityZ * VectorOperator.getProjectXZ (velocity.normalized, true);
-		} else if (posController.NewPoseName == "Open parachute" || (parachuteIsOpened && posController.NewPoseName == "ParachuteDown") || (parachuteIsOpened && posController.NewPoseName == "ParachuteUp")) {
+		} else if (posController.NewPoseName == "Open parachute" || (parachuteIsOpened && posController.NewPoseName == "ParachuteDown") || (parachuteIsOpened && posController.NewPoseName == "ParachuteUp") || (parachuteIsOpened && posController.NewPoseName == "Parachute right") || (parachuteIsOpened && posController.NewPoseName == "Parachute left")) {
 			velocity = velocityY * Vector3.up - velocityZ * root.up;
 			if (posController.NewPoseName == "ParachuteDown") {
 				velocity = velocityY * Vector3.up - velocityZ * root.up * 1.5f;
@@ -178,12 +182,12 @@ public class AviatorController : MonoBehaviour
 		if (posController.NewPoseName == "Squeeze") {
 			suitFrequency = 320;
 			suitMagnitude = 150;
-			motionBlur.blurAmount = 0.8f;
+			motionBlur.blurAmount = 0.83f;
 
 		} else {
 			suitFrequency = 50f;
 			suitMagnitude = 30f;
-			motionBlur.blurAmount = 0.55f;
+			motionBlur.blurAmount = 0.65f;
 		}
 		if (posController.NewPoseName == "Stop n drop") {
 			ClickedTwice = false;
@@ -254,7 +258,7 @@ public class AviatorController : MonoBehaviour
 			if (ClickedTwice == false) {
 				transform.Translate (Vector3.right * 18.0f * Time.deltaTime);
 			} else if (ClickedTwice == true)
-				rotationY = 10.0f;
+				rotationY = 15.0f;
 		} else if (posController.NewPoseName == "Left turn") {
 			rotationY = -3.0f /** posController.LerpTime*/;
 			velocityY = -4.5f;
@@ -264,7 +268,7 @@ public class AviatorController : MonoBehaviour
 			if (ClickedTwice == false) {
 				transform.Translate (Vector3.right * -18.0f * Time.deltaTime);
 			} else if (ClickedTwice == true)
-				rotationY = -10.0f;
+				rotationY = -15.0f;
 		} else if (posController.NewPoseName == "Salto") {
 			rotationY = 0.0f;
 			velocityY = -8.0f;
@@ -282,7 +286,11 @@ public class AviatorController : MonoBehaviour
 			velocityZ = 10.0f;
 			transform.Translate (Vector3.right * 18.0f * Time.deltaTime);
 			TimerRecovery ();
-		} else if (posController.NewPoseName == "Open parachute" || (parachuteIsOpened && posController.NewPoseName == "ParachuteDown") || (parachuteIsOpened && posController.NewPoseName == "ParachuteUp")) {
+		} else if (posController.NewPoseName == "Parachute right") {
+			transform.Translate (Vector3.right * 18.0f * Time.deltaTime);
+		} else if (posController.NewPoseName == "Parachute left") {
+			transform.Translate (Vector3.right * -18.0f * Time.deltaTime);
+		} else if (posController.NewPoseName == "Open parachute" || (parachuteIsOpened && posController.NewPoseName == "ParachuteDown") || (parachuteIsOpened && posController.NewPoseName == "ParachuteUp") || (parachuteIsOpened && posController.NewPoseName == "Parachute right") || (parachuteIsOpened && posController.NewPoseName == "Parachute left")) {
 			float horizontal = 0.0f;
 			if (isMobilePlatform) {
 				horizontal = Mathf.Clamp (3.0f * Input.gyro.gravity.x, -1.0f, 1.0f);
@@ -297,6 +305,29 @@ public class AviatorController : MonoBehaviour
 			velocityY = -1.5f;
 			velocityZ = 2.0f;
 		}
+		if (posController.NewPoseName == "ParachuteUp") { // rotacja spadochronu
+			//parachute.transform.Rotate (30 * Time.deltaTime, 0, 0);	
+			angle += Input.GetAxis ("Vertical") * 32 * Time.deltaTime;
+			angle = Mathf.Clamp (angle, 0f, 15f);
+			parachute.transform.localRotation = Quaternion.AngleAxis (angle + Time.deltaTime, Vector3.right);
+
+
+		} else {
+			angle -= 22 * Time.deltaTime;
+			angle = Mathf.Clamp (angle, 0f, 15f);
+			parachute.transform.localRotation = Quaternion.AngleAxis (-angle + Time.deltaTime, Vector3.left);
+		}
+		/*if (posController.NewPoseName == "Parachute right") {
+			angle += Input.GetAxis ("Horizontal") * 10 * Time.deltaTime;
+			angle = Mathf.Clamp (0f, angle, 10f);
+			parachute.transform.localRotation = Quaternion.AngleAxis (angle + Time.deltaTime, Vector3.right);
+		} else {
+			angle -= 10 * Time.deltaTime;
+			angle = Mathf.Clamp (0f, angle, 10f);
+			parachute.transform.localRotation = Quaternion.AngleAxis (-angle * Time.deltaTime, Vector3.left);
+		}*/
+
+
 	}
 
 

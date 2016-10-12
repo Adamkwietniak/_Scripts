@@ -6,7 +6,7 @@ using System.Collections.Generic;
 public class AviatorGUI : MonoBehaviour
 {
 	CameraWithShakeScript cWSS;
-	private bool doParachuteUp, doParachuteDown;
+	private bool doParachuteUp, doParachuteDown, doParachuteRight, doParachuteLeft;
 	[SerializeField]
 	private JointsPoseController
 		posControlle;
@@ -33,6 +33,8 @@ public class AviatorGUI : MonoBehaviour
 	{
 		doParachuteUp = false;
 		doParachuteDown = false;
+		doParachuteLeft = false;
+		doParachuteRight = false;
 		poses.options = new List<Dropdown.OptionData> (0);
 		posesName = new List<string> (0);
 		foreach (JointPose pose in posControlle.Poses) {
@@ -172,7 +174,19 @@ public class AviatorGUI : MonoBehaviour
 				posControlle.SetPose ("ParachuteDown", 1.0f);
 			} else if (posControlle.NewPoseName == "ParachuteDown" && doParachuteDown == false) {
 				posControlle.SetPose ("Open parachute", 1.0f);
+			} 
+			if (posControlle.NewPoseName == "Open parachute" && doParachuteLeft == true) {
+				posControlle.SetPose ("Parachute left", 1.0f);
+			} else if (posControlle.NewPoseName == "Parachute left" && doParachuteLeft == false) {
+				posControlle.SetPose ("Open parachute", 1.0f);
 			}
+			if (posControlle.NewPoseName == "Open parachute" && doParachuteRight == true) {
+				posControlle.SetPose ("Parachute right", 1.0f);
+			} else if (posControlle.NewPoseName == "Parachute right" && doParachuteRight == false) {
+				posControlle.SetPose ("Open parachute", 1.0f);
+			}
+
+
 		}
 	}
 
@@ -180,6 +194,7 @@ public class AviatorGUI : MonoBehaviour
 	{
 		
 		if (controller.parachuteIsOpened) {
+			
 			if (Input.GetKey (KeyCode.W) || Input.GetKey (KeyCode.UpArrow)) {
 				doParachuteUp = true;
 			} else if (Input.GetKeyUp (KeyCode.W) || Input.GetKeyUp (KeyCode.UpArrow)) {
@@ -192,7 +207,19 @@ public class AviatorGUI : MonoBehaviour
 			} else if (Input.GetKeyUp (KeyCode.S) || Input.GetKey (KeyCode.DownArrow)) {
 				doParachuteDown = false;
 			}
-			
+
+			if (Input.GetKey (KeyCode.LeftShift)) {
+				doParachuteLeft = true;
+			} else if (Input.GetKeyUp (KeyCode.LeftShift)) {
+				doParachuteLeft = false;
+			}
+
+			if (Input.GetKey (KeyCode.RightShift)) {
+				doParachuteRight = true;
+			} else if (Input.GetKeyUp (KeyCode.RightShift)) {
+				doParachuteRight = false;
+			}
+	
 			return;
 		}
 
@@ -260,8 +287,7 @@ public class AviatorGUI : MonoBehaviour
 
 		if (Input.GetKeyDown (KeyCode.Z)) {
 			posControlle.SetPose ("ParachuteDown", 1.0f);
-		}
-
+		} 
 
 	}
 

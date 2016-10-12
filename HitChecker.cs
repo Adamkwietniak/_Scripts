@@ -49,12 +49,14 @@ public class HitChecker : MonoBehaviour
 				rightHand.gameObject.AddComponent<FixedJoint> ();
 				StartCoroutine (WaitAndReload ());
 				cWSS.shake = 0.0f;
+				ccs.changeCameraPossible = false;
 			}
 			Destroy (body);
 			Destroy (GetComponent<Collider> ());
 			body.useGravity = true;
 			bloodPart.SetActive (true);
 			bodies = GetComponentsInChildren<Rigidbody> ();
+			ccs.changeCameraPossible = false;
 			if (ccs.cameraIndex == 1) {
 				ccs.brokenGlass.enabled = true;
 				ccs.changeCameraPossible = false;
@@ -73,10 +75,12 @@ public class HitChecker : MonoBehaviour
 			Destroy (controller);
 			Destroy (posController);
 			if (ccs.cameraIndex == 0 && collision.collider.tag == "Ground") {
-				ccs.changeCameraPossible = false;
+				
 			}
+			ccs.changeCameraPossible = false;
 		} else if (collision.collider.tag == "Ground" && controller.parachuteIsOpened == true) {
 			Destroy (controller);
+			ccs.changeCameraPossible = false;
 			//landingAnim.enabled = true;
 
 		}
