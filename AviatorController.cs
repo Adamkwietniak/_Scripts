@@ -83,7 +83,7 @@ public class AviatorController : MonoBehaviour
 		motionBlur = FindObjectOfType<UnityStandardAssets.ImageEffects.MotionBlur> ();
 		parachuteStrSqale = parachute.localScale;
 		parachute.localScale = 0.01f * Vector3.one;
-		parachute.GetChild (0).GetComponent<MeshRenderer> ().enabled = false;
+		parachute.GetChild (0).GetComponent<SkinnedMeshRenderer> ().enabled = false;
 		hipSuitPoints = new Transform[hipSuit.childCount];
 		hipSuitRotations = new Vector3[hipSuit.childCount];
 		isMobilePlatform = Application.isMobilePlatform;
@@ -100,12 +100,12 @@ public class AviatorController : MonoBehaviour
 		}
 		posController.OnStartAnimation += (JointsPoseController controller) => {
 			if (controller.NewPoseName == "Open parachute") {
-				parachute.GetChild (0).GetComponent<MeshRenderer> ().enabled = true;
+				parachute.GetChild (0).GetComponent<SkinnedMeshRenderer> ().enabled = true;
 			}
 		};
 		posController.OnAnimationComplete += (JointsPoseController controller) => {
 			if (controller.NewPoseName == "Open parachute") {
-				parachute.GetChild (0).GetComponent<MeshRenderer> ().enabled = true;
+				parachute.GetChild (0).GetComponent<SkinnedMeshRenderer> ().enabled = true;
 			}
 			SetCurrentState ();
 		};
