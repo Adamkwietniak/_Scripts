@@ -4,12 +4,12 @@ using System.Collections;
 [System.Serializable]
 public class AviatorController : MonoBehaviour
 {
-	public float MaxTimeToClick { get { return maxTimeToClick; } set { maxTimeToClick = value; } }
+	/*public float MaxTimeToClick { get { return maxTimeToClick; } set { maxTimeToClick = value; } }
 
 	public float MinTimeToClick { get { return minTimeToClick; } set { minTimeToClick = value; } }
 
-	private float maxTimeToClick = 0.8f;
-	private float minTimeToClick = 0.5f;
+	private float maxTimeToClick = 0.60f;
+	private float minTimeToClick = 0.05f;
 	private bool ClickedTwice = false;
 
 	private float minCurrentTime;
@@ -28,12 +28,12 @@ public class AviatorController : MonoBehaviour
 		maxCurrentTime = Time.time + MaxTimeToClick;
 
 		return false;
-	}
+	}*/
 
 	private int i;
 	public float timerToOpenUp = 8.0f;
 	WindScript ws;
-	UnityStandardAssets.ImageEffects.MotionBlur motionBlur;
+	MotionBlur motionBlur;
 	[SerializeField]
 	private JointsPoseController posController;
 	[SerializeField]
@@ -57,6 +57,8 @@ public class AviatorController : MonoBehaviour
 	[HideInInspector]public float velocityY;
 	[HideInInspector]public float velocityZ;
 	private float angle = 45f;
+	private bool isTurningRight = false;
+	private bool isTurningLeft = false;
 
 
 	public Vector3 velocity {
@@ -80,7 +82,7 @@ public class AviatorController : MonoBehaviour
 	public void OnAwake ()
 	{
 		ws = FindObjectOfType <WindScript> ();
-		motionBlur = FindObjectOfType<UnityStandardAssets.ImageEffects.MotionBlur> ();
+		motionBlur = FindObjectOfType<MotionBlur> ();
 		parachuteStrSqale = parachute.localScale;
 		parachute.localScale = 0.01f * Vector3.one;
 		parachute.GetChild (0).GetComponent<SkinnedMeshRenderer> ().enabled = false;
@@ -153,18 +155,14 @@ public class AviatorController : MonoBehaviour
 		} else if (posController.NewPoseName == "Open parachute" || (parachuteIsOpened && posController.NewPoseName == "ParachuteDown") || (parachuteIsOpened && posController.NewPoseName == "ParachuteUp") || (parachuteIsOpened && posController.NewPoseName == "Parachute right") || (parachuteIsOpened && posController.NewPoseName == "Parachute left")) {
 			velocity = velocityY * Vector3.up - velocityZ * root.up;
 			if (posController.NewPoseName == "ParachuteDown") {
-				velocity = velocityY * Vector3.up - velocityZ * root.up * 1.5f;
+				velocity = velocityY * Vector3.up - velocityZ * root.up * 3f;
 			}
 		} else {
 			velocity = velocityY * Vector3.up + velocityZ * root.forward;
 		}
-		velocity *= 3.0f;
+		velocity *= 8.6f;
 		transform.position += velocity * Time.deltaTime;
 		transform.Rotate (rotationY * Time.deltaTime * Vector3.up);
-		//transform.Rotate (rotationX * Time.deltaTime * Vector3.right);
-
-
-
 	}
 
 	public void TimerRecovery ()
@@ -177,8 +175,22 @@ public class AviatorController : MonoBehaviour
 	void VelocityControl ()
 	{
 
+		if (Input.GetKey (KeyCode.E) && parachuteIsOpened == false) {
+			isTurningRight = true;
+			posController.SetPose ("Right turn", 1.0f);
 
-		Debug.Log (rotationY);
+		} else if (Input.GetKeyUp (KeyCode.E) && parachuteIsOpened == false) {
+			posController.SetPose ("Stop n drop", 1.0f);
+			isTurningRight = false;
+		}
+
+		if (Input.GetKey (KeyCode.Q) && parachuteIsOpened == false) {
+			isTurningLeft = true;
+			posController.SetPose ("Left turn", 1.0f);
+		} else if (Input.GetKeyUp (KeyCode.Q) && parachuteIsOpened == false) {
+			posController.SetPose ("Stop n drop", 1.0f);
+			isTurningLeft = false;
+		}
 		if (posController.NewPoseName == "Squeeze") {
 			suitFrequency = 320;
 			suitMagnitude = 150;
@@ -190,14 +202,13 @@ public class AviatorController : MonoBehaviour
 			motionBlur.blurAmount = 0.65f;
 		}
 		if (posController.NewPoseName == "Stop n drop") {
-			ClickedTwice = false;
 			rotationY = 0.0f;
-			velocityY = -5.4f;
+			velocityY = -3.4f;
 			velocityZ = 10.0f;
 			TimerRecovery ();
 		} else if (posController.NewPoseName == "Slow n hold") {
 			rotationY = 0.0f;
-			velocityY = -9.0f;
+			velocityY = -7.0f;
 			velocityZ = 10.0f;
 			TimerRecovery ();
 		} else if (posController.NewPoseName == "Energency stop") {
@@ -208,7 +219,7 @@ public class AviatorController : MonoBehaviour
 		} else if (posController.NewPoseName == "Open up") {
 			rotationY = 0.0f;
 			velocityY = -3.0f;
-			velocityZ = 6.0f;
+			velocityZ = 9.0f;
 			timerToOpenUp -= Time.deltaTime;
 
 			while (true) {
@@ -216,17 +227,68 @@ public class AviatorController : MonoBehaviour
 					timerToOpenUp = 8;
 				}
 				if (timerToOpenUp < 7.9 && timerToOpenUp > 6.5) {
-					transform.Translate (Vector3.up * 13.0f * Time.deltaTime);
+					velocityY = 3f;
 				} else {
-					transform.Translate (Vector3.zero);
+					velocityY = -3f;
 				}
 
 				break;
 			}
 
+		} else if (posController.NewPoseName == "Down&right") {
+			rotationY = 0.0f;
+			velocityY = -8.0f;
+			velocityZ = 10.0f;
+			TimerRecovery ();
+			transform.Translate (Vector3.right * 38.0f * Time.deltaTime);
+		} else if (posController.NewPoseName == "Down&left") {
+			rotationY = 0.0f;
+			velocityY = -8.0f;
+			velocityZ = 10.0f;
+			TimerRecovery ();
+			transform.Translate (Vector3.right * -38.0f * Time.deltaTime);
+		} else if (posController.NewPoseName == "Up&right") {
+			rotationY = 0.0f /** posController.LerpTime*/;
+			velocityY = -2.4f;
+			velocityZ = 10.0f;
+			timerToOpenUp -= Time.deltaTime;
+			transform.Translate (Vector3.right * 38.0f * Time.deltaTime);
+			while (true) {
+				if (timerToOpenUp < 0) {
+					timerToOpenUp = 8;
+				}
+				if (timerToOpenUp < 7.9 && timerToOpenUp > 6.5) {
+					velocityY = 2.4f;
+				} else {
+					velocityY = -3f;
+				}
+
+				break;
+			}
+	
+		} else if (posController.NewPoseName == "Up&left") {
+			rotationY = 0.0f /** posController.LerpTime*/;
+			velocityY = -2.4f;
+			velocityZ = 10.0f;
+			timerToOpenUp -= Time.deltaTime;
+			transform.Translate (Vector3.right * -38.0f * Time.deltaTime);
+			while (true) {
+				if (timerToOpenUp < 0) {
+					timerToOpenUp = 8;
+				}
+				if (timerToOpenUp < 7.9 && timerToOpenUp > 6.5) {
+					velocityY = 2.4f;
+				} else {
+					velocityY = -3f;
+				}
+
+				break;
+			}
+
+
 		} else if (posController.NewPoseName == "Squeeze") {
 			rotationY = 0.0f;
-			velocityY = -14.0f;
+			velocityY = -8.0f;
 			velocityZ = 10.0f;
 			TimerRecovery ();
 		} else if (posController.NewPoseName == "Proper kinesthetic") {
@@ -250,25 +312,29 @@ public class AviatorController : MonoBehaviour
 			velocityZ = 2.0f;
 			TimerRecovery ();
 		} else if (posController.NewPoseName == "Right turn") {
-			rotationY = 3.0f /** posController.LerpTime*/;
-			velocityY = -4.4f;
+			rotationY = 1.0f /** posController.LerpTime*/;
+			velocityY = -2.4f;
 			velocityZ = 12.0f;
-			DoubleClick ();
+			//DoubleClick ();
 			TimerRecovery ();
-			if (ClickedTwice == false) {
-				transform.Translate (Vector3.right * 18.0f * Time.deltaTime);
-			} else if (ClickedTwice == true)
-				rotationY = 15.0f;
+			if (isTurningRight == false) {
+				transform.Translate (Vector3.right * 30.0f * Time.deltaTime);
+			
+			} else if (isTurningRight == true) {
+				rotationY = 25.0f;
+			}
 		} else if (posController.NewPoseName == "Left turn") {
-			rotationY = -3.0f /** posController.LerpTime*/;
-			velocityY = -4.5f;
+			rotationY = -1.0f /** posController.LerpTime*/;
+			velocityY = -2.5f;
 			velocityZ = 7.5f;
 			TimerRecovery ();
-			DoubleClick ();
-			if (ClickedTwice == false) {
-				transform.Translate (Vector3.right * -18.0f * Time.deltaTime);
-			} else if (ClickedTwice == true)
-				rotationY = -15.0f;
+			//DoubleClick ();
+			if (isTurningLeft == false) {
+				transform.Translate (Vector3.right * -35.0f * Time.deltaTime);
+			} else if (isTurningLeft == true) {
+				rotationY = -25.0f;
+			}
+
 		} else if (posController.NewPoseName == "Salto") {
 			rotationY = 0.0f;
 			velocityY = -8.0f;
@@ -276,15 +342,15 @@ public class AviatorController : MonoBehaviour
 			TimerRecovery ();
 		} else if (posController.NewPoseName == "Rotate left") {
 			rotationY = -1.5f;
-			velocityY = -6.0f;
+			velocityY = -4.0f;
 			velocityZ = 10.0f;
-			transform.Translate (Vector3.right * -18.0f * Time.deltaTime);
+			transform.Translate (Vector3.right * -25.0f * Time.deltaTime);
 			TimerRecovery ();
 		} else if (posController.NewPoseName == "Rotate right") {
 			rotationY = 1.5f;
-			velocityY = -6.0f;
+			velocityY = -4.0f;
 			velocityZ = 10.0f;
-			transform.Translate (Vector3.right * 18.0f * Time.deltaTime);
+			transform.Translate (Vector3.right * 25.0f * Time.deltaTime);
 			TimerRecovery ();
 		} else if (posController.NewPoseName == "Parachute right") {
 			transform.Translate (Vector3.right * 18.0f * Time.deltaTime);
@@ -312,22 +378,11 @@ public class AviatorController : MonoBehaviour
 			parachute.transform.localRotation = Quaternion.AngleAxis (angle + Time.deltaTime, Vector3.right);
 
 
-		} else {
+		} else if (posController.NewPoseName == "ParachuteDown" || posController.NewPoseName == "Open parachute") {
 			angle -= 22 * Time.deltaTime;
 			angle = Mathf.Clamp (angle, 0f, 15f);
 			parachute.transform.localRotation = Quaternion.AngleAxis (-angle + Time.deltaTime, Vector3.left);
 		}
-		/*if (posController.NewPoseName == "Parachute right") {
-			angle += Input.GetAxis ("Horizontal") * 10 * Time.deltaTime;
-			angle = Mathf.Clamp (0f, angle, 10f);
-			parachute.transform.localRotation = Quaternion.AngleAxis (angle + Time.deltaTime, Vector3.right);
-		} else {
-			angle -= 10 * Time.deltaTime;
-			angle = Mathf.Clamp (0f, angle, 10f);
-			parachute.transform.localRotation = Quaternion.AngleAxis (-angle * Time.deltaTime, Vector3.left);
-		}*/
-
-
 	}
 
 

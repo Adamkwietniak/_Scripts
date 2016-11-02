@@ -6,6 +6,8 @@ public class ChangeCameraScript : MonoBehaviour
 {
 
 	public Camera[] cameras;
+	public GameObject[] dustParticle;
+	[HideInInspector] public int dustParticleIndex;
 	[HideInInspector]public int cameraIndex;
 	public Camera photoCameraView;
 	public GameObject backButton;
@@ -16,7 +18,7 @@ public class ChangeCameraScript : MonoBehaviour
 	private bool onAndOffScreenshotCamera = false;
 	// bool ułatwiające zmiane między trybem kamery screenshot, a powrotem do gry pod klawiszem "P".
 	//CameraShake cmShake;
-	public float defaultTimeScale = 1;
+	public float defaultTimeScale;
 	private bool NormalCameraBool = true;
 
 
@@ -30,13 +32,19 @@ public class ChangeCameraScript : MonoBehaviour
 		brokenGlass.enabled = false;
 		bloodOnScreen.enabled = false;
 		cameraIndex = 0;
+		dustParticleIndex = 0;
 		photoCameraView.enabled = false;
 		backButton.SetActive (false);
 		changeCameraPossible = true;
 		//cmShake = GameObject.FindGameObjectWithTag ("MainCamera").GetComponent<CameraShake> ();
 
 
-
+		for (int o = 1; o < dustParticle.Length; o++) {
+			dustParticle [o].SetActive (false);
+		}
+		if (dustParticle.Length > 0) {
+			dustParticle [0].SetActive (true);
+		}
 		for (int i = 1; i < cameras.Length; i++) {
 			cameras [i].enabled = false; // tablica kamer. Po indexie wybiera, która z nich ma być aktywna.
 		}
@@ -57,14 +65,20 @@ public class ChangeCameraScript : MonoBehaviour
 	
 		if (Input.GetKeyDown (KeyCode.C) && changeCameraPossible == true) { // po wciśnięciu "C", lawirujemy między kamerami.
 			cameraIndex++; // indeksy służą do przypisania kamer.
+			dustParticleIndex++;
 			if (cameraIndex < cameras.Length) {
 				cameras [cameraIndex - 1].enabled = false;
+				dustParticle [dustParticleIndex - 1].SetActive (false);
 				cameras [cameraIndex].enabled = true;
+				dustParticle [dustParticleIndex].SetActive (true);
 			} else {
 			
 				cameras [cameraIndex - 1].enabled = false;
+				dustParticle [dustParticleIndex - 1].SetActive (false);
 				cameraIndex = 0;
+				dustParticleIndex = 0;
 				cameras [cameraIndex].enabled = true;
+				dustParticle [dustParticleIndex].SetActive (true);
 			}		
 		}
 		if (Input.GetKeyDown (KeyCode.P)) {

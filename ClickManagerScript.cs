@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+﻿/*using UnityEngine;
 using System.Collections.Generic;
 using System;
 
@@ -53,4 +53,4 @@ public class ClickManagerScript : MonoBehaviour
 
 		}
 	}
-}
+}*/

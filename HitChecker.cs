@@ -48,13 +48,13 @@ public class HitChecker : MonoBehaviour
 				leftHand.gameObject.AddComponent<FixedJoint> ();
 				rightHand.gameObject.AddComponent<FixedJoint> ();
 				StartCoroutine (WaitAndReload ());
+				bloodPart.SetActive (true);
 				cWSS.shake = 0.0f;
 				ccs.changeCameraPossible = false;
 			}
 			Destroy (body);
 			Destroy (GetComponent<Collider> ());
 			body.useGravity = true;
-			bloodPart.SetActive (true);
 			bodies = GetComponentsInChildren<Rigidbody> ();
 			ccs.changeCameraPossible = false;
 			if (ccs.cameraIndex == 1) {
@@ -78,12 +78,10 @@ public class HitChecker : MonoBehaviour
 				
 			}
 			ccs.changeCameraPossible = false;
-		} else if (collision.collider.tag == "Ground" && controller.parachuteIsOpened == true) {
-			Destroy (controller);
-			ccs.changeCameraPossible = false;
-			//landingAnim.enabled = true;
-
 		}
+		//landingAnim.enabled = true;
+
+
 	}
 
 	IEnumerator WaitAndReload ()

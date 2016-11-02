@@ -6,7 +6,7 @@ using System.Collections.Generic;
 public class AviatorGUI : MonoBehaviour
 {
 	CameraWithShakeScript cWSS;
-	private bool doParachuteUp, doParachuteDown, doParachuteRight, doParachuteLeft;
+	private bool doParachuteUp, doParachuteDown, doParachuteRight, doParachuteLeft, doUpAndright, doUpAndLeft, doDownAndRight, doDownAndLeft;
 	[SerializeField]
 	private JointsPoseController
 		posControlle;
@@ -35,10 +35,14 @@ public class AviatorGUI : MonoBehaviour
 		doParachuteDown = false;
 		doParachuteLeft = false;
 		doParachuteRight = false;
+		doUpAndright = false;
+		doUpAndLeft = false;
+		doDownAndLeft = false;
+		doDownAndRight = false;
 		poses.options = new List<Dropdown.OptionData> (0);
 		posesName = new List<string> (0);
 		foreach (JointPose pose in posControlle.Poses) {
-			if (pose.name == "Open parachute" || pose.name == "Left turn" || pose.name == "Right turn" || pose.name == "Squeeze" || pose.name == "Open up") {
+			if (pose.name == "Open parachute" || pose.name == "Left turn" || pose.name == "Right turn" || pose.name == "Squeeze" || pose.name == "Open up" || pose.name == "Up&right" || pose.name == "Up&Left" || pose.name == "Down&right" || pose.name == "Down&left") {
 				continue;
 			}
 			bool incompatible0 = posControlle.NewPoseName == pose.name;
@@ -192,16 +196,14 @@ public class AviatorGUI : MonoBehaviour
 
 	void Update ()
 	{
-		
 		if (controller.parachuteIsOpened) {
-			
+
+			//controller.transform.Rotate (0, 0, 0);
 			if (Input.GetKey (KeyCode.W) || Input.GetKey (KeyCode.UpArrow)) {
 				doParachuteUp = true;
 			} else if (Input.GetKeyUp (KeyCode.W) || Input.GetKeyUp (KeyCode.UpArrow)) {
 				doParachuteUp = false;
 			}
-
-
 			if (Input.GetKey (KeyCode.S) || Input.GetKey (KeyCode.DownArrow)) {
 				doParachuteDown = true;
 			} else if (Input.GetKeyUp (KeyCode.S) || Input.GetKey (KeyCode.DownArrow)) {
@@ -258,9 +260,11 @@ public class AviatorGUI : MonoBehaviour
 		if (horizontal > 0.0f) {
 			inTurn = true;
 			posControlle.SetPose ("Right turn", horizontal);
+			posControlle.UpdateSpeed = 2.0f;
 		} else if (horizontal < 0.0f) {
 			inTurn = true;
 			posControlle.SetPose ("Left turn", -horizontal);
+			posControlle.UpdateSpeed = 2.0f;
 		} else if (inTurn) {
 			inTurn = false;
 			posControlle.SetPose ("Stop n drop", 1.0f);
@@ -288,6 +292,43 @@ public class AviatorGUI : MonoBehaviour
 		if (Input.GetKeyDown (KeyCode.Z)) {
 			posControlle.SetPose ("ParachuteDown", 1.0f);
 		} 
+
+		if (Input.GetKey (KeyCode.W) && Input.GetKey (KeyCode.A) || Input.GetKey (KeyCode.UpArrow) && Input.GetKey (KeyCode.LeftArrow)) {
+			doDownAndLeft = true;
+		} else if (Input.GetKeyUp (KeyCode.W) || Input.GetKeyUp (KeyCode.A) || Input.GetKeyUp (KeyCode.UpArrow) || Input.GetKeyUp (KeyCode.LeftArrow)) {
+			doDownAndLeft = false;
+		}
+		if (doDownAndLeft == true) {
+			posControlle.SetPose ("Down&left", 1.0f);
+		}
+
+		if (Input.GetKey (KeyCode.W) && Input.GetKey (KeyCode.D) || Input.GetKey (KeyCode.UpArrow) && Input.GetKey (KeyCode.RightArrow)) {
+			doDownAndRight = true;
+		} else if (Input.GetKeyUp (KeyCode.W) || Input.GetKeyUp (KeyCode.D) || Input.GetKeyUp (KeyCode.UpArrow) || Input.GetKeyUp (KeyCode.RightArrow)) {
+			doDownAndRight = false;
+		}
+		if (doDownAndRight == true) {
+			posControlle.SetPose ("Down&right", 1.0f);
+		}
+
+		if (Input.GetKey (KeyCode.S) && Input.GetKey (KeyCode.D) || Input.GetKey (KeyCode.DownArrow) && Input.GetKey (KeyCode.RightArrow)) {
+			doUpAndright = true;
+		} else if (Input.GetKeyUp (KeyCode.S) || Input.GetKeyUp (KeyCode.D) || Input.GetKeyUp (KeyCode.DownArrow) || Input.GetKeyUp (KeyCode.RightArrow)) {
+			doUpAndright = false;
+		}
+
+		if (doUpAndright == true) {
+			posControlle.SetPose ("Up&right", 1.0f);
+		}
+
+		if (Input.GetKey (KeyCode.S) && Input.GetKey (KeyCode.A) || Input.GetKey (KeyCode.DownArrow) && Input.GetKey (KeyCode.LeftArrow)) {
+			doUpAndLeft = true;
+		} else if (Input.GetKeyUp (KeyCode.S) || Input.GetKeyUp (KeyCode.A) || Input.GetKeyUp (KeyCode.DownArrow) || Input.GetKeyUp (KeyCode.LeftArrow)) {
+			doUpAndLeft = false;
+		}
+		if (doUpAndLeft == true) {
+			posControlle.SetPose ("Up&left", 1.0f);
+		}
 
 	}
 

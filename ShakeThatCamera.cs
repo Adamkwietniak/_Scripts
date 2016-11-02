@@ -5,7 +5,7 @@ public class ShakeThatCamera : MonoBehaviour
 {
 
 	[Range (0, 3)]
-	[HideInInspector]public float shake;
+	public float shake;
 	public GameObject camShakeOne, camShakeTwo;
 	[HideInInspector]public float px = 0f, py = 0f, pz = 0f;
 	ChangeCameraScript cCamS;

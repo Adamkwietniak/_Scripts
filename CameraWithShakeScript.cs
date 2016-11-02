@@ -22,6 +22,8 @@ public class CameraWithShakeScript : MonoBehaviour
 	void Start ()
 	{
 		ry = objectToFollow.transform.rotation.eulerAngles.y;
+		cameraParent.transform.position = objectToFollow.transform.position;
+
 
 	}
 	

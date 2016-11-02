@@ -3,7 +3,6 @@ using System.Collections;
 using System.IO;
 using System;
 using System.Runtime.Serialization.Formatters.Binary;
-using UnityEditor;
 
 public class ScreenHitScript : MonoBehaviour
 {
@@ -27,8 +26,8 @@ public class ScreenHitScript : MonoBehaviour
 			do {
 				screenshotCount++;
 
-				string path = /*Environment.GetFolderPath (Environment.SpecialFolder.MyPictures) + "/Dev4Play/Base Jump/";*/ System.Environment.GetFolderPath (System.Environment.SpecialFolder.MyPictures);
-				string folder = AssetDatabase.CreateFolder ("Dev4play", "Wingsuit Aviator VR");
+				//string path = /*Environment.GetFolderPath (Environment.SpecialFolder.MyPictures) + "/Dev4Play/Base Jump/";*/ System.Environment.GetFolderPath (System.Environment.SpecialFolder.MyPictures);
+				//string folder = AssetDatabase.CreateFolder ("Dev4play", "Wingsuit Aviator VR");
 				screenshotFilename = "screenshot" + screenshotCount + ".png";
 
 			} while (System.IO.File.Exists (screenshotFilename));

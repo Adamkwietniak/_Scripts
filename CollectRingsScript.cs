@@ -10,7 +10,7 @@ public class CollectRingsScript : MonoBehaviour
 	// tablica colliderów
 	public GameObject[] trigger = new GameObject[1];
 	// tablica obiektów
-	[HideInInspector]public int numberOfRingsCollected;
+	//[HideInInspector]public int numberOfRingsCollected;
 	// liczba zebranych kółeczek
 	public Text displayCollectedRings;
 	// tekst pokazujący nasz wynik
@@ -21,7 +21,7 @@ public class CollectRingsScript : MonoBehaviour
 	// Use this for initialization
 	void Start ()
 	{
-		numberOfRingsCollected = 0;
+		//numberOfRingsCollected = 0;
 		for (int z = 0; z == SetAmountOfTriggers; z++) {
 			trigger [z] = GameObject.FindGameObjectWithTag ("Trigger");
 		}
@@ -30,7 +30,7 @@ public class CollectRingsScript : MonoBehaviour
 
 	void Update ()
 	{
-		displayCollectedRings.text = "Rings collected: " + numberOfRingsCollected + "/" + maximumRings;
+		//displayCollectedRings.text = "Rings collected: " + numberOfRingsCollected + "/" + maximumRings;
 	}
 
 
@@ -40,7 +40,7 @@ public class CollectRingsScript : MonoBehaviour
 		if (other.tag == "Trigger") {
 			if (Missions (i) == true) {
 				i++;
-				numberOfRingsCollected++;
+				//numberOfRingsCollected++;
 				ChangeTrigger (i);
 
 			}
