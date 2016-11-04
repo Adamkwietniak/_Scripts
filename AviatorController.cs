@@ -57,9 +57,9 @@ public class AviatorController : MonoBehaviour
 	[HideInInspector]public float velocityY;
 	[HideInInspector]public float velocityZ;
 	private float angle = 45f;
-	private bool isTurningRight = false;
-	private bool isTurningLeft = false;
 
+	private RigidbodyConstraints contrains;
+	private Quaternion quaterion;
 
 	public Vector3 velocity {
 		get;
@@ -67,9 +67,9 @@ public class AviatorController : MonoBehaviour
 	}
 
 	[SerializeField]
-	private float suitFrequency;
+	[HideInInspector]public float suitFrequency;
 	[SerializeField]
-	private float suitMagnitude;
+	[HideInInspector]public float suitMagnitude;
 	private float time;
 	[System.NonSerialized]
 	public bool parachuteIsOpened = false;
@@ -174,22 +174,23 @@ public class AviatorController : MonoBehaviour
 
 	void VelocityControl ()
 	{
-
 		if (Input.GetKey (KeyCode.E) && parachuteIsOpened == false) {
-			isTurningRight = true;
-			posController.SetPose ("Right turn", 1.0f);
-
+			posController.SetPose ("RightDramatic", 1.0f);
+			posController.UpdateSpeed = 2.0f;
 		} else if (Input.GetKeyUp (KeyCode.E) && parachuteIsOpened == false) {
 			posController.SetPose ("Stop n drop", 1.0f);
-			isTurningRight = false;
+			posController.UpdateSpeed = 2.0f;
 		}
 
 		if (Input.GetKey (KeyCode.Q) && parachuteIsOpened == false) {
-			isTurningLeft = true;
-			posController.SetPose ("Left turn", 1.0f);
+			posController.SetPose ("LeftDramatic", 1.0f);
+			posController.UpdateSpeed = 2.0f;
+
+
 		} else if (Input.GetKeyUp (KeyCode.Q) && parachuteIsOpened == false) {
 			posController.SetPose ("Stop n drop", 1.0f);
-			isTurningLeft = false;
+			posController.UpdateSpeed = 2.0f;
+
 		}
 		if (posController.NewPoseName == "Squeeze") {
 			suitFrequency = 320;
@@ -206,6 +207,18 @@ public class AviatorController : MonoBehaviour
 			velocityY = -3.4f;
 			velocityZ = 10.0f;
 			TimerRecovery ();
+		} else if (posController.NewPoseName == "RightDramatic") {
+			rotationY = 16.0f;
+			velocityY = -2.4f;
+			velocityZ = 6.0f;
+			suitFrequency = 150;
+			TimerRecovery ();
+		} else if (posController.NewPoseName == "LeftDramatic") {
+			rotationY = -16.0f;
+			velocityY = -2.4f;
+			velocityZ = 6.0f;
+			suitFrequency = 150;
+			TimerRecovery ();
 		} else if (posController.NewPoseName == "Slow n hold") {
 			rotationY = 0.0f;
 			velocityY = -7.0f;
@@ -221,7 +234,6 @@ public class AviatorController : MonoBehaviour
 			velocityY = -3.0f;
 			velocityZ = 9.0f;
 			timerToOpenUp -= Time.deltaTime;
-
 			while (true) {
 				if (timerToOpenUp < 0) {
 					timerToOpenUp = 8;
@@ -315,25 +327,16 @@ public class AviatorController : MonoBehaviour
 			rotationY = 1.0f /** posController.LerpTime*/;
 			velocityY = -2.4f;
 			velocityZ = 12.0f;
-			//DoubleClick ();
 			TimerRecovery ();
-			if (isTurningRight == false) {
-				transform.Translate (Vector3.right * 30.0f * Time.deltaTime);
-			
-			} else if (isTurningRight == true) {
-				rotationY = 25.0f;
-			}
+			transform.Translate (Vector3.right * 30.0f * Time.deltaTime);
+
 		} else if (posController.NewPoseName == "Left turn") {
 			rotationY = -1.0f /** posController.LerpTime*/;
 			velocityY = -2.5f;
 			velocityZ = 7.5f;
 			TimerRecovery ();
-			//DoubleClick ();
-			if (isTurningLeft == false) {
-				transform.Translate (Vector3.right * -35.0f * Time.deltaTime);
-			} else if (isTurningLeft == true) {
-				rotationY = -25.0f;
-			}
+			transform.Translate (Vector3.right * -35.0f * Time.deltaTime);
+
 
 		} else if (posController.NewPoseName == "Salto") {
 			rotationY = 0.0f;
@@ -372,7 +375,6 @@ public class AviatorController : MonoBehaviour
 			velocityZ = 2.0f;
 		}
 		if (posController.NewPoseName == "ParachuteUp") { // rotacja spadochronu
-			//parachute.transform.Rotate (30 * Time.deltaTime, 0, 0);	
 			angle += Input.GetAxis ("Vertical") * 32 * Time.deltaTime;
 			angle = Mathf.Clamp (angle, 0f, 15f);
 			parachute.transform.localRotation = Quaternion.AngleAxis (angle + Time.deltaTime, Vector3.right);

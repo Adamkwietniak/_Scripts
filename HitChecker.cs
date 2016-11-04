@@ -43,6 +43,8 @@ public class HitChecker : MonoBehaviour
 	{
        
 		if (collision.collider.tag == "Ground") {
+			controller.suitFrequency = 0f;
+			controller.suitMagnitude = 0f;
 			if (controller.parachuteIsOpened == false) {
 				rootBody.gameObject.AddComponent<FixedJoint> ();
 				leftHand.gameObject.AddComponent<FixedJoint> ();

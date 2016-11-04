@@ -56,7 +56,7 @@ public class RingManagerScript : MonoBehaviour
 		//transformRing.transform.Rotate (Vector3.left * Time.deltaTime * 80);
 		//EnableAnimation ();
 		if (commentText.enabled == true) {
-			StartCoroutine (ResetCommentText (1));
+			StartCoroutine (ResetCommentText (0.5f));
 		}
 
 	}
@@ -66,19 +66,19 @@ public class RingManagerScript : MonoBehaviour
 
 		if (other.tag == "Player") {
 			missionManager.numberOfRingsCollected++;
-			Destroy (gameObject, 1.0f);
+			Destroy (gameObject, 1f);
 			float distance = Vector3.Distance (neckPoint.position, transformRing.position);
 			foreach (Rigidbody rb in spheresRb) {
 				rb.AddExplosionForce (force, transform.position, radius, upwardsModifer, forceMode);
 			}
 
-			if (distance < 1 && distance > 0) {
+			if (distance < 2.5 && distance > 0) {
 				commentText.enabled = true;
 				commentText.text = "PERFECT!";
-			} else if (distance > 1 && distance < 1.8) {
+			} else if (distance > 2.5 && distance < 3.5) {
 				commentText.enabled = true;
 				commentText.text = "GOOD!";
-			} else if (distance > 1.8) {
+			} else if (distance > 3.5) {
 				commentText.enabled = true;
 				commentText.text = "OKAY!";
 			}

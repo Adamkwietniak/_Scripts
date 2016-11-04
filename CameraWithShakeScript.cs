@@ -19,26 +19,27 @@ public class CameraWithShakeScript : MonoBehaviour
 	private int layerMaskPlayer = ~(1 << 9);
 	public GameObject camTwo;
 
+
 	void Start ()
 	{
 		ry = objectToFollow.transform.rotation.eulerAngles.y;
 		cameraParent.transform.position = objectToFollow.transform.position;
-
 
 	}
 	
 	// Update is called once per frame
 	void LateUpdate ()
 	{
-		CameraControlXYAxis ();
+		//CameraControlXYAxis ();
 		CameraControlZAxis ();
+		CameraRotation ();
 	}
 
-	void CameraControlXYAxis ()
+	/*void CameraControlXYAxis ()
 	{
 		if (Input.GetAxis ("Mouse Y") > 0 && rx > -maxVerticalAngle) {
 			rx -= Time.deltaTime * (horVerSpeed / 2);
-		} else if (Input.GetAxis ("Mouse Y") < 0 && rx < maxVerticalAngle) {
+		} else if (Input.GetAxis ("Mouse Y") < 0 && rx < maxVerticalAngle) {				//kontrola myszką rotacji kamery.
 			rx += Time.deltaTime * (horVerSpeed / 2);
 		}
 		if (Input.GetAxis ("Mouse X") > 0) {
@@ -47,6 +48,11 @@ public class CameraWithShakeScript : MonoBehaviour
 			ry -= Time.deltaTime * horVerSpeed;
 		}
 		cameraParent.transform.rotation = Quaternion.Euler (rx, ry, 0f);
+	}*/
+
+	void CameraRotation ()
+	{
+		cameraParent.transform.rotation = objectToFollow.transform.rotation; // kamera podąża za 
 	}
 
 	void CameraControlZAxis ()

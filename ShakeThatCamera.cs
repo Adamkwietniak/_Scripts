@@ -13,7 +13,6 @@ public class ShakeThatCamera : MonoBehaviour
 	void Start ()
 	{
 		cCamS = FindObjectOfType <ChangeCameraScript> ();
-		shake = 0.4f;
 	}
 
 	void LateUpdate ()
